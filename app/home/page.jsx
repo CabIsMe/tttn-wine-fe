@@ -11,9 +11,9 @@ export default function Page() {
     }
     return (
         <div>
-            <h1 className="text-2xl font-bold">Home</h1>
+            {/* <h1 className="text-2xl font-bold">Home</h1>
             <p>Click to navigation on the left</p>
-            <button className="bg-green-300" onClick={handleClick}>Click me</button>
+            <button className="bg-green-300" onClick={handleClick}>Click me</button> */}
         </div>
     )
 }
