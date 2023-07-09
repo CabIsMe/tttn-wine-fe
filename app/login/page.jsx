@@ -5,6 +5,8 @@ import { useState } from "react";
 import AuthService from "@/api/authentication/AuthService";
 import { useRouter } from "next/navigation";
 import useAuth from "@/utils/hooks/useAuth"
+import { GoogleLogin ,GoogleOAuthProvider, useGoogleLogin  } from '@react-oauth/google';
+
 export default function Page() {
     const router = useRouter()
     const [email, setEmail] = useState('');
@@ -23,6 +25,21 @@ export default function Page() {
             }
         })
     }
+    const handleSuccess = (response) => {
+        const accessToken = response.accessToken;
+        // const { profileObj } = response;
+        // const username = profileObj.name;
+        // const email = profileObj.email;
+    
+        console.log('Access Token:', accessToken);
+        // console.log('Username:', username);
+        // console.log('Email:', email);
+    };
+    
+    const handleFailure = (error) => {
+        console.error('Login failed:', error);
+    };
+      
     return (
         <div className="flex h-screen w-full justify-center items-center ">
             <div className="h-full relative">
@@ -57,8 +74,13 @@ export default function Page() {
                                 <span className="text-gray-500 mx-3">Or</span>
                                 <div className="flex-grow border-b border-gray-400"></div>
                             </div>
-                            
-                            <button type="button" className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 focus:outline-none">Login with Google</button>
+                            <GoogleOAuthProvider clientId="1016568162484-ap3188q44l6ej258pp69t62vmceh7h59.apps.googleusercontent.com">
+                            <GoogleLogin
+                                onSuccess={handleSuccess}
+                                onFailure={handleFailure}
+                                />
+                            </GoogleOAuthProvider>
+                            {/* <button type="button" className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 focus:outline-none">Login with Google</button> */}
                         </form>
                     </div>
                 </div>
