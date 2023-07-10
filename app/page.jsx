@@ -1,12 +1,15 @@
 'use client';
 import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Icon from '../components/Icon'
 import {PersonalMenu, AnonymousPage, Cart, ProductCard} from './components'
 import Header from '@/layouts/Header'
 import useAuth from "@/utils/hooks/useAuth"
 import DropdownComponent from "@/components/dropdown";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import ProductService from "@/api/products/ProductService";
 export default function Home({
 }) {
   const [authenticate] = useAuth()
@@ -14,6 +17,7 @@ export default function Home({
     <>
       <NavBar isAuthenticate={authenticate}/>
       <ListProduct/>
+      <Slideshow/>
     </>
   )
 }
@@ -65,6 +69,14 @@ function ListProduct({
     e.stopPropagation()
     console.log(productId)
   }
+
+  // const [products_, setProducts_] = useState([])
+  useEffect(()=>{
+    ProductService.getAllProducts().then(res=>{
+      console.log(res.data)
+    })
+  },[])
+
   return(
     <>
       <FilterProduct/>
@@ -110,7 +122,7 @@ function FilterProduct({
   ]
   return(
     // bg-gray-100 
-    <div className="w-screen min-h-[100vh] bg-[url('../public/bg2.png')]
+    <div className="w-screen min-h-[100vh] bg-[url('../public/bg2.png')] bg-cover
       flex justify-center items-end ">
       <div className="space-y-10 py-8">
         <div className="flex items-center p-6 space-x-6 bg-white opacity-90 text-[16px]
@@ -134,6 +146,52 @@ function FilterProduct({
   )
 }
 
+function Slideshow() {
+  const images = [
+    'https://wineshop.vn/public/uploaded/product_brand/francis-ford.png',
+    'https://wineshop.vn/public/uploaded/product_brand/home-korta.jpg',
+    'https://wineshop.vn/public/uploaded/product_brand/product_brand_13.jpg',
+    'https://wineshop.vn/public/uploaded/product_brand/san-mazano.jpg',
+    'https://wineshop.vn/public/uploaded/product_brand/product_brand_7.png',
+    'https://wineshop.vn/public/uploaded/product_brand/product_brand_9.png',
+    'https://wineshop.vn/public/uploaded/product_brand/product_brand_16.png',
+    'https://wineshop.vn/public/uploaded/product_brand/product_brand_15.png'
+    // Add more image URLs as needed
+  ];
+
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 5,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
+
+  return (
+    <div className="w-screen flex justify-center">
+      <div className="w-10/12 bg-white">
+        <div className="h-10 bg-slate-300">
+          <span className="w-full border-t-2 border-gray-600"></span>
+          <span className=" bottom-1/2 left-1/2 bg-white">Brands</span>
+        </div>
+        <Carousel responsive={responsive}>
+          {images.map((imageUrl, index) => (
+            <div className="h-[350px] flex justify-around items-center px-6" key={index}>
+              <img src={imageUrl} alt={`Slide ${index}`} />
+            </div>
+          ))}
+        </Carousel>
+      </div>
+    </div>
+  );
+}
 
 function LoginForm() {
   const [showLoading, hideLoading] = useLoadingAnimation();

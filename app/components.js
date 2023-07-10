@@ -119,6 +119,7 @@ export function ProductCard({
     handleClickProduct,
     handleClickCart
   }){
+    
     return(
       <div onClick={handleClickProduct} className="relative w-[90%] bg-white shadow-md rounded-xl duration-500 group 
       hover:scale-105 hover:shadow-xl">

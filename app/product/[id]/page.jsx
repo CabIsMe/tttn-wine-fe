@@ -47,7 +47,7 @@ export default function Page(
     function handleAddToCart(){
         console.log(params.id, amount)
     }
-
+    
     return(
         <>
             <section className="text-gray-700 body-font overflow-hidden border-b-2 bg-gradient-to-r from-gray-100 via-white to-gray-100">
@@ -135,8 +135,8 @@ export default function Page(
                 <div className="w-[88%]  mx-auto flex justify-between gap-5 ">
                 {
                     products.map(product=>
-                        <ProductCard key={product.id} productInfo={product} handleClickProduct={() => handleClickProduct(product.id)} 
-                        handleClickCart={(e)=> handleClickCart(product.id, e)}
+                        <ProductCard key={product.id} productInfo={product} handleClickProduct={() => console.log(product.id)} 
+                        handleClickCart={(e)=> console.log(product.id, e)}
                         />
                     )
                 }
