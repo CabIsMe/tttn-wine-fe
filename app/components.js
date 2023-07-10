@@ -119,14 +119,14 @@ export function ProductCard({
     handleClickProduct,
     handleClickCart
   }){
-    
+
     return(
       <div onClick={handleClickProduct} className="relative w-[90%] bg-white shadow-md rounded-xl duration-500 group 
       hover:scale-105 hover:shadow-xl">
               <img src={productInfo.product_img}
                       alt="Product" className="w-full h-60 object-cover rounded-t-xl" />
               <div className="px-4 py-3 w-full">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">{productInfo.brand}</span>
+                  <span className="text-gray-400 mr-3 uppercase text-xs">{productInfo.brand_info.brand_name}</span>
                   <p className="text-lg font-bold text-black truncate block capitalize">{productInfo.product_name}</p>
                   <div className="flex items-center">
                       <p className="text-lg font-semibold text-black cursor-auto my-3">{productInfo.cost}$</p>
@@ -141,6 +141,18 @@ export function ProductCard({
                     <Icon name="cart-plus" size="xl" />
                 </span>
               </div>
+      </div>
+    )
+  }
+
+export function SectionHeading({title}){
+    return(
+      <div className="w-screen flex justify-center items-center my-24">
+        <div className="flex items-center w-10/12">
+          <hr className="flex-grow border-gray-300"/>
+          <h2 className="px-4 text-xl font-bold">{title}</h2>
+          <hr className="flex-grow border-gray-300"/>
+        </div>
       </div>
     )
   }

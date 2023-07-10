@@ -16,7 +16,11 @@ export default function Home({
   return (
     <>
       <NavBar isAuthenticate={authenticate}/>
+      <FilterProduct/>
       <ListProduct/>
+      <SectionHeading title="NEW RELEASE" />
+      <ListProduct/>
+      <SectionHeading title="BRANDS" />
       <Slideshow/>
     </>
   )
@@ -43,18 +47,18 @@ export function NavBar({
   )
 }
 
-const products =[
-  {id: 1, product_name:"Wine1", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092121-1.1c7d8cfea75f219576db460999053e55.jpg"},
-  {id: 2, product_name:"Wine2", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/010704-1.40470121fa34a4bd0978a6ca95883141.jpg"},
-  {id: 3, product_name:"Wine3", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092104-1.1fdcf7cee862d06e0d6917c56993a1d1.jpg"},
-  {id: 4, product_name:"Wine5", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/140102-1.c22ed4484512fc30baf93c21ab67b41c.jpg"},
-  {id: 5, product_name:"Wine6", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/branco.3f76a6ad51bebf72eb01c183eb5eab7c.jpg"},
-  {id: 6, product_name:"Wine7", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/101209-1.e54f2d59c23d6f85552e907931da87aa.jpg"},
-  {id: 7, product_name:"Wine8", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/071404-1.ef9a88d0bffa9ce2b020e099057e2bc0.jpg"},
-  {id: 9, product_name:"Wine9", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/hors-serie-n1.28a5fe7147bbffb01560bda7c771f136.jpg"},
-  {id: 8, product_name:"Wine9", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/052020-11.f3e140263d07e0bbed1c14f4810ee7b1.jpg"},
-  {id: 10, product_name:"Wine9", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/081607-1.24622f2ac318dc4ab4fa384fb1762078.jpg"},
-]
+// const products =[
+//   {id: 1, product_name:"Wine1", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092121-1.1c7d8cfea75f219576db460999053e55.jpg"},
+//   {id: 2, product_name:"Wine2", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/010704-1.40470121fa34a4bd0978a6ca95883141.jpg"},
+//   {id: 3, product_name:"Wine3", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092104-1.1fdcf7cee862d06e0d6917c56993a1d1.jpg"},
+//   {id: 4, product_name:"Wine5", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/140102-1.c22ed4484512fc30baf93c21ab67b41c.jpg"},
+//   {id: 5, product_name:"Wine6", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/branco.3f76a6ad51bebf72eb01c183eb5eab7c.jpg"},
+//   {id: 6, product_name:"Wine7", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/101209-1.e54f2d59c23d6f85552e907931da87aa.jpg"},
+//   {id: 7, product_name:"Wine8", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/071404-1.ef9a88d0bffa9ce2b020e099057e2bc0.jpg"},
+//   {id: 9, product_name:"Wine9", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/hors-serie-n1.28a5fe7147bbffb01560bda7c771f136.jpg"},
+//   {id: 8, product_name:"Wine9", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/052020-11.f3e140263d07e0bbed1c14f4810ee7b1.jpg"},
+//   {id: 10, product_name:"Wine9", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/081607-1.24622f2ac318dc4ab4fa384fb1762078.jpg"},
+// ]
 
 function ListProduct({
 
@@ -70,22 +74,25 @@ function ListProduct({
     console.log(productId)
   }
 
-  // const [products_, setProducts_] = useState([])
+  const [products, setProducts] = useState([])
   useEffect(()=>{
     ProductService.getAllProducts().then(res=>{
-      console.log(res.data)
+      if(res.data.status==1){
+        console.log(res.data.detail)
+        setProducts(res.data.detail)
+      }
     })
   },[])
 
   return(
     <>
-      <FilterProduct/>
-      <div className="w-full flex justify-center py-16 pb-28">
+      
+      <div className="w-full flex justify-center py-24">
         <div className="w-[88%] grid grid-cols-5 gap-4">
           {
             products.map(product=>
-              <ProductCard key={product.id} productInfo={product} handleClickProduct={() => handleClickProduct(product.id)} 
-              handleClickCart={(e)=> handleClickCart(product.id, e)}
+              <ProductCard key={product.product_id} productInfo={product} handleClickProduct={() => handleClickProduct(product.product_id)} 
+              handleClickCart={(e)=> handleClickCart(product.product_id, e)}
               />
               )
           }
@@ -123,7 +130,7 @@ function FilterProduct({
   return(
     // bg-gray-100 
     <div className="w-screen min-h-[100vh] bg-[url('../public/bg2.png')] bg-cover
-      flex justify-center items-end ">
+      flex justify-center items-end mb-12">
       <div className="space-y-10 py-8">
         <div className="flex items-center p-6 space-x-6 bg-white opacity-90 text-[16px]
         text-gray-600 rounded-xl shadow-lg hover:shadow-xl transform scale-95 hover:scale-100 transition duration-700">
@@ -177,10 +184,6 @@ function Slideshow() {
   return (
     <div className="w-screen flex justify-center">
       <div className="w-10/12 bg-white">
-        <div className="h-10 bg-slate-300">
-          <span className="w-full border-t-2 border-gray-600"></span>
-          <span className=" bottom-1/2 left-1/2 bg-white">Brands</span>
-        </div>
         <Carousel responsive={responsive}>
           {images.map((imageUrl, index) => (
             <div className="h-[350px] flex justify-around items-center px-6" key={index}>
@@ -191,6 +194,18 @@ function Slideshow() {
       </div>
     </div>
   );
+}
+
+function SectionHeading({title}){
+  return(
+    <div className="w-screen flex justify-center items-center ">
+      <div className="flex items-center w-10/12">
+        <hr className="flex-grow border-gray-300"/>
+        <h2 className="px-4 text-xl font-bold">{title}</h2>
+        <hr className="flex-grow border-gray-300"/>
+      </div>
+    </div>
+  )
 }
 
 function LoginForm() {
