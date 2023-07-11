@@ -57,7 +57,7 @@ export default function Page(
                     <div className="container px-5 py-24 mx-auto">
                         <div className="lg:w-4/5 mx-auto flex flex-wrap">
                         <img alt="ecommerce" className="lg:w-1/2 w-full object-cover object-center rounded-2xl border-b pb-5" 
-                        src="https://vinoteka.vn/assets/components/phpthumbof/cache/081607-1.24622f2ac318dc4ab4fa384fb1762078.jpg" />
+                        src={productDetail.product_img} />
                         <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
                             <h2 className="text-sm title-font text-gray-500 tracking-widest">{productDetail.brand_info.brand_name}</h2>
                             <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">{productDetail.product_name}</h1>

@@ -3,6 +3,9 @@
 import Icon from '@/components/Icon';
 import { useRouter } from 'next/navigation'
 import { useState } from 'react';
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
 
 
 
@@ -155,4 +158,57 @@ export function SectionHeading({title}){
         </div>
       </div>
     )
+  }
+
+export function Slideshow({
+    listData
+}) {
+    const images = [
+      'https://wineshop.vn/public/uploaded/product_brand/francis-ford.png',
+      'https://wineshop.vn/public/uploaded/product_brand/home-korta.jpg',
+      'https://wineshop.vn/public/uploaded/product_brand/product_brand_13.jpg',
+      'https://wineshop.vn/public/uploaded/product_brand/san-mazano.jpg',
+      'https://wineshop.vn/public/uploaded/product_brand/product_brand_7.png',
+      'https://wineshop.vn/public/uploaded/product_brand/product_brand_9.png',
+      'https://wineshop.vn/public/uploaded/product_brand/product_brand_16.png',
+      'https://wineshop.vn/public/uploaded/product_brand/product_brand_15.png'
+      // Add more image URLs as needed
+    ];
+  
+    const responsive = {
+      desktop: {
+        breakpoint: { max: 3000, min: 1024 },
+        items: 5,
+      },
+      tablet: {
+        breakpoint: { max: 1024, min: 464 },
+        items: 2,
+      },
+      mobile: {
+        breakpoint: { max: 464, min: 0 },
+        items: 1,
+      },
+    };
+    
+    function CustomButtonGroup({ next, previous }){
+        return (
+          <div className="carousel-button-group">
+            <button  onClick={previous}>Previous</button>
+            <button onClick={next}>Next</button>
+          </div>
+        );
+      };
+    return (
+      <div className="w-screen flex justify-center">
+        <div className="w-10/12 bg-white">
+          <Carousel responsive={responsive} customButtonGroup={<CustomButtonGroup />}>
+            {images.map((imageUrl, index) => (
+              <div className="h-[350px] flex justify-around items-center px-6" key={index}>
+                <img src={imageUrl} alt={`Slide ${index}`} />
+              </div>
+            ))}
+          </Carousel>
+        </div>
+      </div>
+    );
   }

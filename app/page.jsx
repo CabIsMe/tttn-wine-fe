@@ -7,8 +7,6 @@ import {PersonalMenu, AnonymousPage, Cart, ProductCard, SectionHeading} from './
 import Header from '@/layouts/Header'
 import useAuth from "@/utils/hooks/useAuth"
 import DropdownComponent from "@/components/dropdown";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 import ProductService from "@/api/products/ProductService";
 export default function Home({
 }) {
