@@ -3,12 +3,10 @@ import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import Icon from '../components/Icon'
-import {PersonalMenu, AnonymousPage, Cart, ProductCard} from './components'
+import {PersonalMenu, AnonymousPage, Cart, ProductCard, Slideshow} from './components'
 import Header from '@/layouts/Header'
 import useAuth from "@/utils/hooks/useAuth"
 import DropdownComponent from "@/components/dropdown";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 import ProductService from "@/api/products/ProductService";
 export default function Home({
 }) {
@@ -40,7 +38,7 @@ export function NavBar({
       : 
       <>
         <AnonymousPage direction="login" nameDisplay="Login"/>
-        <AnonymousPage direction="signup" nameDisplay="Sign up"/>
+        <AnonymousPage direction="sign_up" nameDisplay="Sign up"/>
       </>
       }
       />
@@ -153,48 +151,7 @@ function FilterProduct({
   )
 }
 
-function Slideshow() {
-  const images = [
-    'https://wineshop.vn/public/uploaded/product_brand/francis-ford.png',
-    'https://wineshop.vn/public/uploaded/product_brand/home-korta.jpg',
-    'https://wineshop.vn/public/uploaded/product_brand/product_brand_13.jpg',
-    'https://wineshop.vn/public/uploaded/product_brand/san-mazano.jpg',
-    'https://wineshop.vn/public/uploaded/product_brand/product_brand_7.png',
-    'https://wineshop.vn/public/uploaded/product_brand/product_brand_9.png',
-    'https://wineshop.vn/public/uploaded/product_brand/product_brand_16.png',
-    'https://wineshop.vn/public/uploaded/product_brand/product_brand_15.png'
-    // Add more image URLs as needed
-  ];
 
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 5,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
-
-  return (
-    <div className="w-screen flex justify-center">
-      <div className="w-10/12 bg-white">
-        <Carousel responsive={responsive}>
-          {images.map((imageUrl, index) => (
-            <div className="h-[350px] flex justify-around items-center px-6" key={index}>
-              <img src={imageUrl} alt={`Slide ${index}`} />
-            </div>
-          ))}
-        </Carousel>
-      </div>
-    </div>
-  );
-}
 
 function SectionHeading({title}){
   return(
