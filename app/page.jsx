@@ -3,7 +3,7 @@ import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import Icon from '../components/Icon'
-import {PersonalMenu, AnonymousPage, Cart, ProductCard} from './components'
+import {PersonalMenu, AnonymousPage, Cart, ProductCard, SectionHeading} from './components'
 import Header from '@/layouts/Header'
 import useAuth from "@/utils/hooks/useAuth"
 import DropdownComponent from "@/components/dropdown";
@@ -196,17 +196,7 @@ function Slideshow() {
   );
 }
 
-function SectionHeading({title}){
-  return(
-    <div className="w-screen flex justify-center items-center ">
-      <div className="flex items-center w-10/12">
-        <hr className="flex-grow border-gray-300"/>
-        <h2 className="px-4 text-xl font-bold">{title}</h2>
-        <hr className="flex-grow border-gray-300"/>
-      </div>
-    </div>
-  )
-}
+
 
 function LoginForm() {
   const [showLoading, hideLoading] = useLoadingAnimation();
