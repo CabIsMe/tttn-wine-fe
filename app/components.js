@@ -2,12 +2,142 @@
 
 import Icon from '@/components/Icon';
 import { useRouter } from 'next/navigation'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import Header from '@/layouts/Header'
+import DropdownComponent from "@/components/dropdown";
+import ProductService from "@/api/products/ProductService";
 
+export function NavBar({
+  isAuthenticate
+}){
+  
+  return(
+    <Header children={
+      isAuthenticate ? 
+      <>
+        <Cart direction="cart"/>
+        <PersonalMenu />
+      </>
+      : 
+      <>
+        <AnonymousPage direction="login" nameDisplay="Login"/>
+        <AnonymousPage direction="signup" nameDisplay="Sign up"/>
+      </>
+      }
+      />
+  )
+}
 
+export function ListProduct({
+  typeListProducts
+}){
+  const router = useRouter();
+  function handleClickProduct(productId){
+    console.log(123)
 
+    router.push(`/product/${productId}`)
+  }
+  function handleClickCart(productId, e){
+    e.stopPropagation()
+    console.log(productId)
+  }
+
+  const [products, setProducts] = useState([])
+  useEffect(()=>{
+    if(typeListProducts == 'all'){
+      ProductService.getAllProducts().then(res=>{
+        if(res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail)
+        }
+      })
+    }
+    else if(typeListProducts == 'new-release'){
+      ProductService.getNewReleaseProducts().then(res=>{
+        if(res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail)
+        }
+      })
+    }
+    else if(typeListProducts == 'promotional-products'){
+      ProductService.getPromotionalProducts().then(res=>{
+        if(res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail)
+        }
+      })
+    }
+  },[])
+
+  return(
+    <>
+      
+      <div className="w-full flex justify-center py-24">
+        <div className="w-[88%] grid grid-cols-5 gap-4">
+          {
+            products.map(product=>
+              <ProductCard key={product.product_id} productInfo={product} handleClickProduct={() => handleClickProduct(product.product_id)} 
+              handleClickCart={(e)=> handleClickCart(product.product_id, e)}
+              />
+              )
+          }
+          
+        </div>
+      </div>
+    </>
+  )
+}
+
+export function FilterProduct({
+  FilterProduct,
+  SearchProduct
+}){
+  const [searchInput, setSearchInput] = useState(null)
+
+  function handleFilter(type){
+    console.log(type)
+    FilterProduct(type)
+
+  } 
+  function handleSearch(e){
+    e.preventDefault()
+    console.log(searchInput)
+    SearchProduct(searchInput)
+  }
+
+  const options=[
+    {name: "Cost", value:"cost-up", icon:"arrow-up-short-wide"},
+    {name: "Rate", value:"rate-up", icon:"arrow-up-short-wide"},
+    {name: "Release", value:"release-up", icon:"arrow-up-short-wide"}
+  ]
+  return(
+    // bg-gray-100 
+    <div className="w-screen min-h-[100vh] bg-[url('../public/bg2.png')] bg-cover
+      flex justify-center items-end mb-12">
+      <div className="space-y-10 py-8">
+        <div className="flex items-center p-6 space-x-6 bg-white opacity-90 text-[16px]
+        text-gray-600 rounded-xl shadow-lg hover:shadow-xl transform scale-95 hover:scale-100 transition duration-700">
+          <DropdownComponent setFilter={handleFilter} optionValues={options} />
+          <form onSubmit={handleSearch} className="flex items-center">
+            <div className="flex  p-4 w-72 space-x-4 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input onChange={(e)=> setSearchInput(e.target.value)} className=" border-b-2 outline-none" type="text" placeholder="Article name or keyword..." />
+            </div>
+            <div className="bg-gray-800 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+              <button type="submit">Search</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  )
+}
 
 export function PersonalMenu({
 }){
@@ -150,7 +280,7 @@ export function ProductCard({
 
 export function SectionHeading({title}){
     return(
-      <div className="w-screen flex justify-center items-center my-24">
+      <div className="w-screen flex justify-center items-center my-16">
         <div className="flex items-center w-10/12">
           <hr className="flex-grow border-gray-300"/>
           <h2 className="px-4 text-xl font-bold">{title}</h2>

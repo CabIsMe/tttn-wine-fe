@@ -6,6 +6,12 @@ const CLIENT_URL ="http://localhost:8080/client"
 const getAllProducts =()=>{
     return axios.get(CLIENT_URL +"/list-products")
 }
+const getPromotionalProducts=()=>{
+    return axios.get(CLIENT_URL +"/list-promotional-products")
+}
+const getNewReleaseProducts=()=>{
+    return axios.get(CLIENT_URL +"/list-new-products")
+}
 const getProduct=(productId)=>{
     const response = axios.post(CLIENT_URL + "/get-product",{
         product_id : productId,
@@ -15,7 +21,9 @@ const getProduct=(productId)=>{
 
 const ProductService={
     getAllProducts,
-    getProduct
+    getProduct,
+    getPromotionalProducts,
+    getNewReleaseProducts
 }
 
 export default ProductService

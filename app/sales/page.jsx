@@ -1,14 +1,17 @@
 'use client';
 import useNotification from "@/utils/hooks/useNotification"
 import { assets } from "@/utils/constants/logo";
+import { NavBar, FilterProduct, ListProduct, SectionHeading } from "../components";
+import useAuth from "@/utils/hooks/useAuth"
 
 export default function Page() {
 
-
+    const [authenticate] = useAuth()
     return (
-        <center >
-            <h1>sale</h1>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque aliquid voluptates perspiciatis repellendus? Dignissimos quam placeat dolorem, nisi harum, asperiores quia iusto vitae totam deleniti doloremque modi ullam fugiat architecto!
-        </center>
+        < >
+         <NavBar isAuthenticate={authenticate}/>
+        <FilterProduct/>
+        <ListProduct typeListProducts='promotional-products'/>   
+        </>
     )
 }

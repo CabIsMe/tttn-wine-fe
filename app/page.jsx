@@ -3,47 +3,27 @@ import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import Icon from '../components/Icon'
-import {PersonalMenu, AnonymousPage, Cart, ProductCard, SectionHeading} from './components'
-import Header from '@/layouts/Header'
 import useAuth from "@/utils/hooks/useAuth"
-import DropdownComponent from "@/components/dropdown";
-import ProductService from "@/api/products/ProductService";
-export default function Home({
+
+import Carousel from "react-multi-carousel";
+import { NavBar, SectionHeading, FilterProduct, ListProduct } from "./components";
+import "react-multi-carousel/lib/styles.css";export default function Home({
 }) {
   const [authenticate] = useAuth()
   return (
     <>
       <NavBar isAuthenticate={authenticate}/>
       <FilterProduct/>
-      <ListProduct/>
+      <ListProduct typeListProducts="all"/>
       <SectionHeading title="NEW RELEASE" />
-      <ListProduct/>
+      <ListProduct typeListProducts="new-release"/>
       <SectionHeading title="BRANDS" />
       <Slideshow/>
     </>
   )
 }
 
-export function NavBar({
-  isAuthenticate
-}){
-  
-  return(
-    <Header children={
-      isAuthenticate ? 
-      <>
-        <Cart direction="cart"/>
-        <PersonalMenu />
-      </>
-      : 
-      <>
-        <AnonymousPage direction="login" nameDisplay="Login"/>
-        <AnonymousPage direction="signup" nameDisplay="Sign up"/>
-      </>
-      }
-      />
-  )
-}
+
 
 // const products =[
 //   {id: 1, product_name:"Wine1", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092121-1.1c7d8cfea75f219576db460999053e55.jpg"},
@@ -58,98 +38,11 @@ export function NavBar({
 //   {id: 10, product_name:"Wine9", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/081607-1.24622f2ac318dc4ab4fa384fb1762078.jpg"},
 // ]
 
-function ListProduct({
-
-}){
-  const router = useRouter();
-  function handleClickProduct(productId){
-    console.log(123)
-
-    router.push(`/product/${productId}`)
-  }
-  function handleClickCart(productId, e){
-    e.stopPropagation()
-    console.log(productId)
-  }
-
-  const [products, setProducts] = useState([])
-  useEffect(()=>{
-    ProductService.getAllProducts().then(res=>{
-      if(res.data.status==1){
-        console.log(res.data.detail)
-        setProducts(res.data.detail)
-      }
-    })
-  },[])
-
-  return(
-    <>
-      
-      <div className="w-full flex justify-center py-24">
-        <div className="w-[88%] grid grid-cols-5 gap-4">
-          {
-            products.map(product=>
-              <ProductCard key={product.product_id} productInfo={product} handleClickProduct={() => handleClickProduct(product.product_id)} 
-              handleClickCart={(e)=> handleClickCart(product.product_id, e)}
-              />
-              )
-          }
-          
-        </div>
-      </div>
-    </>
-  )
-}
 
 
 
-function FilterProduct({
-  FilterProduct,
-  SearchProduct
-}){
-  const [searchInput, setSearchInput] = useState(null)
 
-  function handleFilter(type){
-    console.log(type)
-    FilterProduct(type)
 
-  } 
-  function handleSearch(e){
-    e.preventDefault()
-    console.log(searchInput)
-    SearchProduct(searchInput)
-  }
-
-  const options=[
-    {name: "Cost", value:"cost-up", icon:"arrow-up-short-wide"},
-    {name: "Rate", value:"rate-up", icon:"arrow-up-short-wide"},
-    {name: "Release", value:"release-up", icon:"arrow-up-short-wide"}
-  ]
-  return(
-    // bg-gray-100 
-    <div className="w-screen min-h-[100vh] bg-[url('../public/bg2.png')] bg-cover
-      flex justify-center items-end mb-12">
-      <div className="space-y-10 py-8">
-        <div className="flex items-center p-6 space-x-6 bg-white opacity-90 text-[16px]
-        text-gray-600 rounded-xl shadow-lg hover:shadow-xl transform scale-95 hover:scale-100 transition duration-700">
-          <DropdownComponent setFilter={handleFilter} optionValues={options} />
-          <form onSubmit={handleSearch} className="flex items-center">
-            <div className="flex  p-4 w-72 space-x-4 rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input onChange={(e)=> setSearchInput(e.target.value)} className=" border-b-2 outline-none" type="text" placeholder="Article name or keyword..." />
-            </div>
-            <div className="bg-gray-800 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
-              <button type="submit">Search</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-  )
-}
 
 function Slideshow() {
   const images = [
