@@ -34,7 +34,7 @@ export function ListProduct({
   typeListProducts
 }){
   const router = useRouter();
-  function handleClickProduct(productId){
+  function clickProduct(productId){
     console.log(123)
 
     router.push(`/product/${productId}`)
@@ -79,8 +79,10 @@ export function ListProduct({
         <div className="w-[88%] grid grid-cols-5 gap-4">
           {
             products.map(product=>
-              <ProductCard key={product.product_id} productInfo={product} handleClickProduct={() => handleClickProduct(product.product_id)} 
-              handleClickCart={(e)=> handleClickCart(product.product_id, e)}
+              <ProductCard key={product.product_id} 
+                productInfo={product} 
+                handleClickProduct={() => clickProduct(product.product_id)} 
+                handleClickCart={(e)=> handleClickCart(product.product_id, e)}
               />
               )
           }
@@ -255,17 +257,25 @@ export function ProductCard({
 
     return(
       <div onClick={handleClickProduct} className="relative w-[90%] bg-white shadow-md rounded-xl duration-500 group 
-      hover:scale-105 hover:shadow-xl">
+      hover:scale-105 hover:shadow-xl overflow-hidden">
               <img src={productInfo.product_img}
                       alt="Product" className="w-full h-60 object-cover rounded-t-xl" />
               <div className="px-4 py-3 w-full">
                   <span className="text-gray-400 mr-3 uppercase text-xs">{productInfo.brand_info.brand_name}</span>
                   <p className="text-lg font-bold text-black truncate block capitalize">{productInfo.product_name}</p>
                   <div className="flex items-center">
-                      <p className="text-lg font-semibold text-black cursor-auto my-3">{productInfo.cost}$</p>
-                      <del>
-                          <p className="text-sm text-gray-600 cursor-auto ml-2">{productInfo.cost + 100}$</p>
-                      </del>
+                      {productInfo.promotion_detail_info == null ? 
+                      <>
+                        <p className="text-lg font-semibold text-black cursor-auto my-3">{productInfo.cost}$</p>
+                    
+                      </> :
+                      <>
+                        <p className="text-lg font-semibold text-black cursor-auto my-3">{productInfo.discounted_cost}$</p>
+                        <del>
+                            <p className="text-sm text-gray-600 cursor-auto ml-2">{productInfo.cost}$</p>
+                        </del>
+                        <div className='absolute top-0 right-0 p-3 bg-gray-200 rounded-bl-xl' >{productInfo.promotion_detail_info.discount_percentage*100}%</div>
+                      </>}
                       
                   </div>
               </div>

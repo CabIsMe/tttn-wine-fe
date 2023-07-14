@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import {ProductCard} from '../../components'
 import ProductService from "@/api/products/ProductService";
 import {SectionHeading} from '../../components' 
+import useAuth from "@/utils/hooks/useAuth";
+import { NavBar } from "../../components";
 const relevantProducts =[
     {id: 1, product_name:"Wine1", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092121-1.1c7d8cfea75f219576db460999053e55.jpg"},
     {id: 2, product_name:"Wine2", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/010704-1.40470121fa34a4bd0978a6ca95883141.jpg"},
@@ -19,6 +21,7 @@ const relevantProducts =[
 export default function Page(
     { params }
 ) {
+    const [authenticate] = useAuth()
     const [productDetail, setProductDetail] = useState(undefined)
     const products = 
     relevantProducts.length > 5 ?
@@ -38,6 +41,7 @@ export default function Page(
         console.log(params.id, amount)
     }
     useEffect(()=>{
+        console.log("authenticate", authenticate)
         console.log(params.id)
         ProductService.getProduct(params.id).then(res=>{
             if(res.data.status==1){
@@ -49,6 +53,8 @@ export default function Page(
     
     return(
         <>
+            <NavBar isAuthenticate={authenticate} />
+
             {!productDetail ?
             <></> :
             <>
@@ -122,11 +128,12 @@ export default function Page(
                             <div className="flex">
                             <span className="title-font font-medium text-2xl text-gray-900">{productDetail.cost + '$'}</span>
                             <button onClick={handleAddToCart} className="flex ml-auto text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded">Add to cart</button>
-                            <button  className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
+                            <button onClick={handleAddToCart} className="flex ml-5 text-white bg-teal-500 border-0 py-2 px-6 focus:outline-none hover:bg-teal-600 rounded">Check out</button>
+                            {/* <button  className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                                 <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
                                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
                                 </svg>
-                            </button>
+                            </button> */}
                             </div>
                         </div>
                         </div>
