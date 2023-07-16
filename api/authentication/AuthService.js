@@ -9,13 +9,14 @@ const login=async (username, password)=>{
       password
     });
   if (response.data.detail.token) {
-    localStorage.setItem("access_token", JSON.stringify(response.data));
+    localStorage.setItem("token", JSON.stringify(response.data.detail.token));
   }
   return response
 }
 //   log out
 const logout=()=> {
-  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  location.reload();
 }
 // Sign up
 const register=async(username, password)=>{

@@ -18,12 +18,19 @@ const getProduct=(productId)=>{
     } )
     return response
 }
+const getProductsByName=(productName)=>{
+    const response = axios.post(CLIENT_URL + "/get-product-by-name",{
+        product_name: productName,
+    } )
+    return response
+}
 
 const ProductService={
     getAllProducts,
     getProduct,
     getPromotionalProducts,
-    getNewReleaseProducts
+    getNewReleaseProducts,
+    getProductsByName
 }
 
 export default ProductService

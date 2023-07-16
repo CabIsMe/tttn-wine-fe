@@ -12,36 +12,23 @@ import {useGoogleLogin  } from '@react-oauth/google';
 export default function Page() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [_, setAuthenticate] = useAuth()
-    const [ user, setUser ] = useState([]);
     const [ profile, setProfile ] = useState([]);
     const [errorInput, setErrorInput] = useState("123")
     const router = useRouter()
-    useEffect(
-        () => {
-            if (user) {
-                axios
-                    .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-                        headers: {
-                            Authorization: `Bearer ${user.access_token}`,
-                            Accept: 'application/json'
-                        }
-                    })
-                    .then((res) => {
-                        console.log(res.data)
-                        setProfile(res.data);
-                    })
-                    .catch((err) => console.log(err));
-            }
-        },
-        [ user ]
-    );
+    // useEffect(
+    //     () => {
+    //         console.log("authenticate", authenticate)
+    //         if (user) {
+                
+    //         }
+    //     },
+    //     [ user ]
+    // );
     function handleLogin(e)
     {
         e.preventDefault()
         AuthService.login(email, password).then(res=>{
             if (res.data.status==1){
-                setAuthenticate(true)
                 console.log(res.data)
                 router.push("/")
             }else{
@@ -60,7 +47,23 @@ export default function Page() {
     }
     
     const login = useGoogleLogin({
-        onSuccess: (codeResponse) => setUser(codeResponse),
+        onSuccess: (response) => {
+            console.log('response', response)
+            axios
+                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${response.access_token}`, {
+                    headers: {
+                        Authorization: `Bearer ${response.access_token}`,
+                        Accept: 'application/json'
+                    }
+                })
+                .then((res) => {
+                    console.log(res.data)
+                    console.log('user', response)
+                    setProfile(res.data);
+                    router.push("/")
+                })
+                .catch((err) => console.log(err));
+        },
         onError: (error) => console.log('Login Failed:', error)
     });
       

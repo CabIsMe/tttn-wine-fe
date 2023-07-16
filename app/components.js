@@ -8,25 +8,48 @@ import "react-multi-carousel/lib/styles.css";
 import Header from '@/layouts/Header'
 import DropdownComponent from "@/components/dropdown";
 import ProductService from "@/api/products/ProductService";
+import AuthService from '@/api/authentication/AuthService';
 
 export function NavBar({
-  isAuthenticate
 }){
+  const [isChecked, setIsChecked] = useState({
+    isLoaded : false,
+    isLogin: false
+  })
   
+  useEffect(()=>{
+    console.log(123)
+    setIsChecked({
+      isLoaded: true,
+      isLogin: false
+    })
+    const token = JSON.parse(localStorage.getItem('token'));
+    if(token){
+      setIsChecked({
+        isLoaded: true,
+        isLogin: true
+      })
+    }
+    
+  },[])
   return(
-    <Header children={
-      isAuthenticate ? 
       <>
-        <Cart direction="cart"/>
-        <PersonalMenu />
+        {
+          isChecked.isLoaded &&
+          <div>
+            {isChecked.isLogin? 
+              <div className='flex justify-between min-w-[70px]'>
+                <Cart direction="cart"/>
+                <PersonalMenu />
+              </div> : 
+              <div className='flex justify-between min-w-[110px]'>
+                <AnonymousPage direction="login" nameDisplay="Login"/>
+                <AnonymousPage direction="signup" nameDisplay="Sign up"/>
+              </div>
+            }
+          </div>
+        }
       </>
-      : 
-      <>
-        <AnonymousPage direction="login" nameDisplay="Login"/>
-        <AnonymousPage direction="signup" nameDisplay="Sign up"/>
-      </>
-      }
-      />
   )
 }
 
@@ -46,6 +69,7 @@ export function ListProduct({
 
   const [products, setProducts] = useState([])
   useEffect(()=>{
+    console.log("typeListProducts", typeListProducts)
     if(typeListProducts == 'all'){
       ProductService.getAllProducts().then(res=>{
         if(res.data.status==1){
@@ -70,7 +94,17 @@ export function ListProduct({
         }
       })
     }
-  },[])
+    else{
+      
+      ProductService.getProductsByName(typeListProducts).then(res=>{
+        console.log(res.data)
+        if(res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail)
+        }
+      })
+    }
+  },[typeListProducts])
 
   return(
     <>
@@ -100,15 +134,12 @@ export function FilterProduct({
   const [searchInput, setSearchInput] = useState(null)
 
   function handleFilter(type){
-    console.log(type)
     FilterProduct(type)
 
   } 
-  function handleSearch(e){
-    e.preventDefault()
-    console.log(searchInput)
-    SearchProduct(searchInput)
-  }
+  // function handleSearch(e){
+  //   SearchProduct(searchInput)
+  // }
 
   const options=[
     {name: "Cost", value:"cost-up", icon:"arrow-up-short-wide"},
@@ -123,16 +154,16 @@ export function FilterProduct({
         <div className="flex items-center p-6 space-x-6 bg-white opacity-90 text-[16px]
         text-gray-600 rounded-xl shadow-lg hover:shadow-xl transform scale-95 hover:scale-100 transition duration-700">
           <DropdownComponent setFilter={handleFilter} optionValues={options} />
-          <form onSubmit={handleSearch} className="flex items-center">
+          <form className="flex items-center">
             <div className="flex  p-4 w-72 space-x-4 rounded-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <input onChange={(e)=> setSearchInput(e.target.value)} className=" border-b-2 outline-none" type="text" placeholder="Article name or keyword..." />
+              <input onChange={(e)=> {
+                SearchProduct(e.target.value)
+              }} className=" border-b-2 outline-none" type="text"  placeholder="Article name or keyword..." />
             </div>
-            <div className="bg-gray-800 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
-              <button type="submit">Search</button>
-            </div>
+            
           </form>
         </div>
       </div>
@@ -143,7 +174,8 @@ export function FilterProduct({
 
 export function PersonalMenu({
 }){
-
+    const router=  useRouter()
+    
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const handleMouseEnter = () => {
         setIsDropdownOpen(true);
@@ -155,19 +187,23 @@ export function PersonalMenu({
     return(
         <div className="relative">
             {/* <li className="hover:cursor-pointer" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> */}
-            <a className="flex items-center hover:cursor-pointer hover:text-gray-500" href="#" 
+            <span className="flex items-center hover:cursor-pointer hover:text-gray-500"
              onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-            </a>
+            </span>
                 {/* <a className="hover:text-gray-500" href="#" >{nameDisplay}</a> */}
             {/* </li> */}
             {isDropdownOpen && (
             <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
                 className="absolute min-w-max py-2 bg-white border rounded shadow-lg">
-                <PersonalMenuComponent direction="info" nameDisplay="Information"/>
-                <PersonalMenuComponent direction="login" nameDisplay="Log out"/>
+                <PersonalMenuComponent handleClick={()=>{
+                  router.push("info")
+                }} nameDisplay="Information"/>
+                <PersonalMenuComponent handleClick={()=>{
+                  AuthService.logout()
+                }} nameDisplay="Log out"/>
                 
             </div>
             )}
@@ -175,14 +211,14 @@ export function PersonalMenu({
     )
 }
 export function PersonalMenuComponent({
-    direction,
+    handleClick,
     nameDisplay
 }){
-    const router=  useRouter()
+    
     return(
-        <a onClick={()=> router.push(direction)} href="#" className="block px-4 py-1 text-gray-800 hover:bg-gray-200 text-xs">
+        <span onClick={handleClick} className="cursor-pointer block px-4 py-1 text-gray-800 hover:bg-gray-200 text-xs">
             {nameDisplay}
-        </a>
+        </span>
     )
 }
 export function MenuComponent({
@@ -236,7 +272,7 @@ export function Cart(
 ){
     const router= useRouter()
     return(
-        <a className="flex items-center hover:text-gray-500" href="#" onClick={()=>{router.push(direction)}}>
+        <div className="flex items-center hover:text-gray-500" onClick={()=>{router.push(direction)}}>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
@@ -245,7 +281,7 @@ export function Cart(
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500">
                 </span>
             </span>
-        </a>
+        </div>
     )
 }
 

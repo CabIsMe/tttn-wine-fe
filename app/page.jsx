@@ -7,14 +7,27 @@ import useAuth from "@/utils/hooks/useAuth"
 
 import Carousel from "react-multi-carousel";
 import { NavBar, SectionHeading, FilterProduct, ListProduct } from "./components";
-import "react-multi-carousel/lib/styles.css";export default function Home({
+import "react-multi-carousel/lib/styles.css";
+import Header from "@/layouts/Header";
+export default function Home({
 }) {
-  const [authenticate] = useAuth()
+  const [dataProducts, setDataProducts] = useState("all")
+  function FilterProducts(name){
+    console.log(name)
+    if(!name){
+      setDataProducts("all")
+    }
+    else{
+      setDataProducts(name)
+    }
+  }
+  
+  
   return (
     <>
-      <NavBar isAuthenticate={authenticate}/>
-      <FilterProduct/>
-      <ListProduct typeListProducts="all"/>
+      <Header/>
+      <FilterProduct SearchProduct={FilterProducts}/>
+      <ListProduct typeListProducts={dataProducts}/>
       <SectionHeading title="NEW RELEASE" />
       <ListProduct typeListProducts="new-release"/>
       <SectionHeading title="BRANDS" />
@@ -22,7 +35,6 @@ import "react-multi-carousel/lib/styles.css";export default function Home({
     </>
   )
 }
-
 
 
 // const products =[

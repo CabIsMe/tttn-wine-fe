@@ -1,9 +1,10 @@
 'use client';
 import { createContext, useContext, useState } from "react";
 
-const AuthContext = createContext(undefined);
+const AuthContext = createContext(false);
+
 export default function useAuth() {
-    const [isAuth, setIsAuth] = useContext(AuthContext);
+    const [isAuth, setIsAuth] = useContext(AuthContext); 
     return [isAuth, setIsAuth];
 }
 

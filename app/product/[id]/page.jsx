@@ -5,7 +5,8 @@ import {ProductCard} from '../../components'
 import ProductService from "@/api/products/ProductService";
 import {SectionHeading} from '../../components' 
 import useAuth from "@/utils/hooks/useAuth";
-import { NavBar } from "../../components";
+import Header from "@/layouts/Header";
+
 const relevantProducts =[
     {id: 1, product_name:"Wine1", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092121-1.1c7d8cfea75f219576db460999053e55.jpg"},
     {id: 2, product_name:"Wine2", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/010704-1.40470121fa34a4bd0978a6ca95883141.jpg"},
@@ -53,7 +54,7 @@ export default function Page(
     
     return(
         <>
-            <NavBar isAuthenticate={authenticate} />
+            <Header />
 
             {!productDetail ?
             <></> :
