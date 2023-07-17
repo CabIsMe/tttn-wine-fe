@@ -9,7 +9,7 @@ import Header from '@/layouts/Header'
 import DropdownComponent from "@/components/dropdown";
 import ProductService from "@/api/products/ProductService";
 import AuthService from '@/api/authentication/AuthService';
-
+import CustomerOrderService from '@/api/orders/CustomerOrdersService';
 export function NavBar({
 }){
   const [isChecked, setIsChecked] = useState({
@@ -64,6 +64,14 @@ export function ListProduct({
   }
   function handleClickCart(productId, e){
     e.stopPropagation()
+    CustomerOrderService.AddToCard(productId, 1).then(res=>{
+      if(res.data.status==1){
+        console.log(123)
+      }
+      else{
+        console.log(res.data.msg)
+      }
+    })
     console.log(productId)
   }
 
