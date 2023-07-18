@@ -28,14 +28,14 @@ export function NotificationProvider({
         timeoutId.current = setTimeout(() => {
             notiRef.current = notiRef.current.slice(1)
             setNotiList(notiRef.current);
-        }, 3000);
+        }, 4000);
     }
 
     return (
         <NotificationContext.Provider value={pushNotification}>
             {children}
             {notiList.length > 0 &&
-                <ul className="fixed top-10 right-10 flex flex-col gap-2">
+                <ul className="fixed top-10 right-10 flex flex-col gap-2 z-50">
                 {notiList.map(ntfn => 
                     <li key={uuid++}>
                         <Notification
@@ -52,7 +52,7 @@ export function NotificationProvider({
  
 function Notification({
     text,
-    type = "danger", // 'info' | 'danger' | 'error' | 'success',
+    type  // 'info' | 'danger' | 'error' | 'success',
 }) {
     let className = "animation-bounce-in-right animation-bounce-out-up flex flex-col gap-1 w-80 px-2 py-2 border-2 text-gray-700 font-semibold rounded-md "
     let title;

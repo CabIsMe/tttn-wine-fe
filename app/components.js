@@ -10,13 +10,13 @@ import DropdownComponent from "@/components/dropdown";
 import ProductService from "@/api/products/ProductService";
 import AuthService from '@/api/authentication/AuthService';
 import CustomerOrderService from '@/api/orders/CustomerOrdersService';
+import useNotification from '@/utils/hooks/useNotification';
 export function NavBar({
 }){
   const [isChecked, setIsChecked] = useState({
     isLoaded : false,
     isLogin: false
   })
-  
   useEffect(()=>{
     console.log(123)
     setIsChecked({
@@ -39,7 +39,7 @@ export function NavBar({
           <div>
             {isChecked.isLogin? 
               <div className='flex justify-between min-w-[70px]'>
-                <Cart direction="cart"/>
+                <Cart direction="/cart"/>
                 <PersonalMenu />
               </div> : 
               <div className='flex justify-between min-w-[110px]'>
@@ -57,19 +57,30 @@ export function ListProduct({
   typeListProducts
 }){
   const router = useRouter();
+  const notify = useNotification();
+  
   function clickProduct(productId){
     console.log(123)
-
     router.push(`/product/${productId}`)
   }
+
   function handleClickCart(productId, e){
     e.stopPropagation()
     CustomerOrderService.AddToCard(productId, 1).then(res=>{
       if(res.data.status==1){
+        const notification = {
+          text: "The product has been added to cart",
+          type: "info"
+        };
+        notify(notification);
         console.log(123)
       }
       else{
-        console.log(res.data.msg)
+        console.log(res.data.detail)
+        const notification = {
+          text: res.data.detail,
+        };
+        notify(notification);
       }
     })
     console.log(productId)
@@ -276,11 +287,11 @@ export function AnonymousPage({
 }
 
 export function Cart(
-    direction
+    {direction}
 ){
     const router= useRouter()
     return(
-        <div className="flex items-center hover:text-gray-500" onClick={()=>{router.push(direction)}}>
+        <div className="flex items-center hover:text-gray-500" onClick={()=>router.push(direction)}>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>

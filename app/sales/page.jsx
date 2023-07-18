@@ -9,7 +9,6 @@ export default function Page() {
     const [authenticate] = useAuth()
     return (
         < >
-            <Header/>
             <FilterProduct/>
             <ListProduct typeListProducts='promotional-products'/>   
         </>
