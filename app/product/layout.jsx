@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { routerPath } from "@/utils/constants/router";
-import { NavBar } from "../components";
-import useAuth from "@/utils/hooks/useAuth";
-
+import Header from "@/layouts/Header";
 export default function Layout({
     children
 }) {
     return (
         <>
+            <Header/>
             {children}
         </>
     )

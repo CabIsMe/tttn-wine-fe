@@ -9,7 +9,7 @@ const login=async (username, password)=>{
       password
     });
   if (response.data.detail.token) {
-    localStorage.setItem("token", JSON.stringify(response.data.detail.token));
+    localStorage.setItem("token", response.data.detail.token);
   }
   return response
 }

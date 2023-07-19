@@ -16,17 +16,23 @@ const AddToCard=async(productId, amount)=>{
     return response
 }
 const RemoveItemsCard=(productId)=>{
-    axios.post(CLIENT_URL + "/remove-cart",{
+    return axios.post(CLIENT_URL + "/remove-cart",{
         product_id: productId,
     },{
         headers: authHeader()
     })
 }
 
+const AllProductsInCart=()=>{
+    return axios.get(CLIENT_URL + "/cart",{
+        headers: authHeader()
+    })
+}
 
 const CustomerOrderService={
     AddToCard,
-    RemoveItemsCard
+    RemoveItemsCard,
+    AllProductsInCart
 }
 
 export default CustomerOrderService

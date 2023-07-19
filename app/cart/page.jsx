@@ -2,37 +2,52 @@
 import useNotification from "@/utils/hooks/useNotification"
 import { assets } from "@/utils/constants/logo";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-
-
-const products = [
-    {
-      id: 1,
-      name: 'Throwback Hip Bag',
-      href: '#',
-      color: 'Salmon',
-      price: '$90.00',
-      quantity: 1,
-      imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-      imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-    },
-    {
-      id: 2,
-      name: 'Medium Stuff Satchel',
-      href: '#',
-      color: 'Blue',
-      price: '$32.00',
-      quantity: 1,
-      imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-      imageAlt:
-        'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-    },
-    // More products...
-  ]
+import { useEffect, useState } from "react";
+import CustomerOrderService from "@/api/orders/CustomerOrdersService";
+import Input from "@/components/Input";
+import Textarea from "@/components/Textarea";
+import RadioGroup from "@/components/Radio";
+import CustomerService from "@/api/customer/CustomerService";
 
 export default function Page() {
     const router = useRouter()
-
+    const notify= useNotification()
+    const [products, setProducts] = useState([])
+    const [customerInfo, setCustomerInfo] = useState(null)
+    const [nextStep, setNextStep] = useState(false)
+    useEffect(()=>{
+      CustomerOrderService.AllProductsInCart().then(res=>{
+        if (res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail)
+        }
+      })
+      CustomerService.GetCustomerInfo().then(res=>{
+        if (res.data.status==1){
+          // console.log(res.data.detail)
+          setCustomerInfo(res.data.detail)
+        }
+      })
+      console.log("customerInfo",customerInfo)
+    },[])
+    
+    function handleClickCheckOut(){
+      setNextStep(true)
+    }
+    function handleCheckOutInfo(data){
+      CustomerService.UpdateCustomer(data).then(res=>{
+        if (res.data.status==1){
+          console.log(res.data.detail)
+        }
+        else{
+          const notification = {
+            text: res.data.msg,
+          };
+          notify(notification);
+        }
+      })
+    }
+    
     return (
       <div className="bg-white">
         <div className="container mx-auto mt-10">
@@ -49,7 +64,9 @@ export default function Page() {
                 <h3 className="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Total</h3>
               </div>
               <div className="h-[400px] overflow-x-hidden overflow-y-auto">
-                <ProductDetail/>                  
+                {products.map(product=>(
+                  <ProductDetail key={product.product_id} productDetail={product}/>
+                ))}                  
               </div>
               
               
@@ -64,29 +81,7 @@ export default function Page() {
             </div>
 
             <div id="summary" className="w-1/4 px-8 py-10">
-              <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
-              <div className="flex justify-between mt-10 mb-5">
-                <span className="font-semibold text-sm uppercase">Items 3</span>
-                <span className="font-semibold text-sm">590$</span>
-              </div>
-              {/* <div>
-                <label className="font-medium inline-block mb-3 text-sm uppercase">Shipping</label>
-                <select className="block p-2 text-gray-600 w-full text-sm">
-                  <option>Standard shipping - $10.00</option>
-                </select>
-              </div> */}
-              <div className="py-10">
-                <label htmlFor="promo" className="font-semibold inline-block mb-3 text-sm uppercase">Promo Code</label>
-                <input type="text" id="promo" placeholder="Enter your code" className="p-2 text-sm w-full" />
-              </div>
-              <button className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">Apply</button>
-              <div className="border-t mt-8">
-                <div className="flex font-semibold justify-between py-6 text-sm uppercase">
-                  <span>Total cost</span>
-                  <span>$600</span>
-                </div>
-                <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
-              </div>
+              {nextStep ? <CustomerInfo info={customerInfo} setInfo={handleCheckOutInfo} /> : <OrderSummary handleClick={handleClickCheckOut} items={products}/>}
             </div>
           </div>
         </div>
@@ -99,17 +94,19 @@ function ProductDetail({
   handleRemoveItem,
   // amount
 }){
-  const [amount, setAmount] = useState(1)
+  const [amount, setAmount] = useState(productDetail.amount)
   
+  const hasPromotion = productDetail.cost < productDetail.product_info.cost
+
   return(
     <div className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5 select-none">
       <div className="flex w-2/5">
         <div className="w-20">
-          <img className="h-24" src="https://drive.google.com/uc?id=18KkAVkGFvaGNqPy2DIvTqmUH_nk39o3z" alt="" />
+          <img className="h-24 object-cover" src={productDetail.product_info.product_img} alt="" />
         </div>
         <div className="flex flex-col justify-between ml-4 flex-grow">
-          <span className="font-bold text-sm">Iphone 6S</span>
-          <span className="text-red-500 text-xs">Apple</span>
+          <span className="font-bold text-sm">{productDetail.product_info.product_name}</span>
+          <span className="text-red-500 text-xs whitespace-nowrap ">{productDetail.product_info.status}</span>
           <span onClick={handleRemoveItem} className="font-semibold hover:text-red-500 text-gray-500 text-xs cursor-pointer">Remove</span>
         </div>
       </div>
@@ -128,8 +125,117 @@ function ProductDetail({
           </svg>
         </span>
       </div>
-      <span className="text-center w-1/5 font-semibold text-sm">$400.00</span>
-      <span className="text-center w-1/5 font-semibold text-sm">$400.00</span>
+      <span className="text-center w-1/5 font-semibold text-sm">
+        {
+        hasPromotion ? 
+          (<>
+            <span className="line-through text-gray-500 mr-1">{'$'+productDetail.product_info.cost}</span>
+            {'$'+productDetail.cost}
+          </>):
+          (<>
+            {'$'+productDetail.cost}
+          </>)
+        }
+      </span>
+      <span className="text-center w-1/5 font-semibold text-sm">{'$'+productDetail.cost*productDetail.amount}</span>
     </div>
+  )
+}
+
+function OrderSummary({
+  handleClick,
+  items,
+}){
+  const totalCost = items.reduce((accumulator, item) => accumulator + item.cost*item.amount, 0);
+  function handleCheckOut(e){
+    e.preventDefault()
+    handleClick()
+  }
+  return(
+    <>
+      <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
+      {items.map(product=>(
+        <div key={product.product_id} className="flex justify-between mt-10 mb-5">
+          <span className="font-semibold text-sm uppercase max-w-[150px] text-black">{product.product_info.product_name}</span>
+          <span className="font-semibold text-sm">{'$'+product.cost*product.amount}</span>
+        </div>
+      ))}
+      {/* <div>
+        <label className="font-medium inline-block mb-3 text-sm uppercase">Shipping</label>
+        <select className="block p-2 text-gray-600 w-full text-sm">
+          <option>Standard shipping - $10.00</option>
+        </select>
+      </div> */}
+      <div className="py-10">
+        <label htmlFor="promo" className="font-semibold inline-block mb-3 text-sm uppercase">Promo Code</label>
+        <input type="text" id="promo" placeholder="Enter your code" className="p-2 text-sm w-full" />
+      </div>
+      {/* <button className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">Apply</button> */}
+      <div className="border-t mt-8">
+        <div className="flex font-semibold justify-between py-6 text-sm uppercase">
+          <span>Total cost</span>
+          <span>{'$'+totalCost}</span>
+        </div>
+        <button onClick={(e)=>handleCheckOut(e)} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
+      </div>
+    </>
+  )
+}
+
+function CustomerInfo({
+  info,
+  setInfo,
+}){
+  const [customerInfo, setCustomerInfo] = useState(info)
+  function handleCheckOut(e){
+    e.preventDefault()
+    setInfo(customerInfo)
+  }
+  return(
+    <>
+      <h1 className="font-semibold text-2xl border-b pb-8">Private Information</h1>
+      <br/>
+      <Input
+        label="Full Name"
+        icon="circle-question"
+        placeholder="Your full name"
+        type="text"
+        handleChange={(e)=>setCustomerInfo({
+          ...customerInfo,
+          full_name: e.target.value
+        })}
+        value={customerInfo.full_name}
+      />
+      <br/>
+      <RadioGroup handleRadioChange={(value)=>setCustomerInfo({
+        ...customerInfo,
+        gender: value
+      })} text1="Male" text2="Female" icon="venus-mars" />
+      <br/>
+      <Input
+        label="Date Of Birth"
+        icon="cake-candles"
+        placeholder="YYYY-MM-DD"
+        type="text"
+        value={customerInfo.date_of_birth}
+      />
+      <br/>
+      <Textarea
+        label="Address"
+        icon="location-pin"
+        placeholder="...Street, House No"
+        type="text"
+        value={customerInfo.address}
+      />
+      <br/>
+      <Input
+        label="Phone Number"
+        icon="mobile-screen"
+        placeholder="YYYY-MM-DD"
+        type="text"
+        value={customerInfo.phone_number}
+      />
+      <button onClick={(e)=>handleCheckOut(e)} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full mt-10">Checkout</button>
+    </>
   )
 }

@@ -2,7 +2,6 @@ import Provider from '@/layouts/Provider'
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { useRouter } from 'next/navigation'
-import Header from '@/layouts/Header'
 import Footer from '@/layouts/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,7 +17,7 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
       </head>
       <body className={inter.className}>
-        <Header/>
+        
         <Provider>
           {children}
         </Provider>

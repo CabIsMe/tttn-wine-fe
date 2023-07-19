@@ -23,7 +23,8 @@ export function NavBar({
       isLoaded: true,
       isLogin: false
     })
-    const token = JSON.parse(localStorage.getItem('token'));
+    
+    const token = localStorage.getItem('token')
     if(token){
       setIsChecked({
         isLoaded: true,
@@ -31,7 +32,7 @@ export function NavBar({
       })
     }
     
-  },[])
+  },[localStorage.getItem('token')])
   return(
       <>
         {
@@ -70,13 +71,20 @@ export function ListProduct({
       if(res.data.status==1){
         const notification = {
           text: "The product has been added to cart",
+          type: "success"
+        };
+        notify(notification);
+      }
+      else if(res.data.status >= 1000){
+        const notification = {
+          text: "The login session has expired.",
           type: "info"
         };
         notify(notification);
-        console.log(123)
+        router.push("/login")
       }
       else{
-        console.log(res.data.detail)
+        console.log(res.data)
         const notification = {
           text: res.data.detail,
         };
@@ -219,7 +227,10 @@ export function PersonalMenu({
                 className="absolute min-w-max py-2 bg-white border rounded shadow-lg">
                 <PersonalMenuComponent handleClick={()=>{
                   router.push("info")
-                }} nameDisplay="Information"/>
+                }} nameDisplay="My Account"/>
+                <PersonalMenuComponent handleClick={()=>{
+                  router.push("info")
+                }} nameDisplay="My Purchase"/>
                 <PersonalMenuComponent handleClick={()=>{
                   AuthService.logout()
                 }} nameDisplay="Log out"/>

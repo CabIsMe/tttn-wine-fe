@@ -7,6 +7,7 @@ import useAuth from "@/utils/hooks/useAuth"
 
 import Carousel from "react-multi-carousel";
 import { NavBar, SectionHeading, FilterProduct, ListProduct } from "./components";
+import Header from "@/layouts/Header";
 import "react-multi-carousel/lib/styles.css";
 export default function Home({
 }) {
@@ -24,6 +25,7 @@ export default function Home({
   
   return (
     <>
+      <Header/>
       <FilterProduct SearchProduct={FilterProducts}/>
       <ListProduct typeListProducts={dataProducts}/>
       <SectionHeading title="NEW RELEASE" />
