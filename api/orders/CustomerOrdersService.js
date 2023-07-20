@@ -29,10 +29,24 @@ const AllProductsInCart=()=>{
     })
 }
 
+const CreateCustomerOrder = async(customerInfo, customerOrderDetailInfo) =>{
+    const response = await axios.post(CLIENT_URL +"/create-customer-order",{
+        "full_name": customerInfo.full_name,
+        "address": customerInfo.address,
+        "phone_number": customerInfo.phone_number,
+        "payment_status": customerInfo.payment_status,
+        "customer_order_detail_info": customerOrderDetailInfo
+    },{
+        headers: authHeader()
+    })
+    return response
+}
+
 const CustomerOrderService={
     AddToCard,
     RemoveItemsCard,
-    AllProductsInCart
+    AllProductsInCart,
+    CreateCustomerOrder
 }
 
 export default CustomerOrderService

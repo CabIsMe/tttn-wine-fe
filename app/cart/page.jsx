@@ -8,6 +8,9 @@ import Input from "@/components/Input";
 import Textarea from "@/components/Textarea";
 import RadioGroup from "@/components/Radio";
 import CustomerService from "@/api/customer/CustomerService";
+import Icon from "@/components/Icon";
+
+const paymentMethodInit=["Cash on delivery", "Paypal"]
 
 export default function Page() {
     const router = useRouter()
@@ -15,11 +18,31 @@ export default function Page() {
     const [products, setProducts] = useState([])
     const [customerInfo, setCustomerInfo] = useState(null)
     const [nextStep, setNextStep] = useState(false)
+    function insertObject(arr, obj) {
+
+      // append object
+       arr = [...arr, object];
+       
+       return arr
+   }
     useEffect(()=>{
       CustomerOrderService.AllProductsInCart().then(res=>{
         if (res.data.status==1){
           console.log(res.data.detail)
           setProducts(res.data.detail)
+        }
+        else{
+          console.log(res.data)
+          if(res.data.status >1000){
+            // require login again
+            // router.push("/login")
+            router.push("/login");
+            const notification = {
+              text: "Login session has expired; please try again.",
+              type: "danger",
+            };
+            notify(notification);
+          }
         }
       })
       CustomerService.GetCustomerInfo().then(res=>{
@@ -27,14 +50,42 @@ export default function Page() {
           // console.log(res.data.detail)
           setCustomerInfo(res.data.detail)
         }
+        else{
+          console.log(res.data)
+        }
       })
       console.log("customerInfo",customerInfo)
     },[])
     
-    function handleClickCheckOut(){
-      setNextStep(true)
-    }
-    function handleCheckOutInfo(data){
+    
+    function handleCheckOutInfo(data, method){
+      // payment : Thanh toán trực tiếp
+      if(method == paymentMethodInit[0]){
+        const customerInfo = {
+          "full_name": data.full_name,
+          "address": data.address,
+          "phone_number": data.phone_number,
+          "payment_status": 1,
+        }
+        const listProductsCheckOut = products.slice(0, products.length).map(item => ({ 
+            "product_id":item.product_id,
+            "cost": item.cost,
+            "amount":item.amount
+        }));
+        
+        CustomerOrderService.CreateCustomerOrder(customerInfo, listProductsCheckOut).then(res=>{
+          if (res.data.status == 1){
+            const notification = {
+              text: "Order Success",
+              type: "success"
+            };
+            notify(notification);
+          }
+          else{
+            console.log(res.data)
+          }
+        })
+      }
       CustomerService.UpdateCustomer(data).then(res=>{
         if (res.data.status==1){
           console.log(res.data.detail)
@@ -55,7 +106,7 @@ export default function Page() {
             <div className="w-3/4 bg-white px-10 py-10">
               <div className="flex justify-between border-b pb-8">
                 <h1 className="font-semibold text-2xl">Shopping Cart</h1>
-                <h2 className="font-semibold text-2xl">3 Items</h2>
+                <h2 className="font-semibold text-2xl">{products.length +' Items'}</h2>
               </div>
               <div className="flex mt-10 mb-5">
                 <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">Product Details</h3>
@@ -81,7 +132,7 @@ export default function Page() {
             </div>
 
             <div id="summary" className="w-1/4 px-8 py-10">
-              {nextStep ? <CustomerInfo info={customerInfo} setInfo={handleCheckOutInfo} /> : <OrderSummary handleClick={handleClickCheckOut} items={products}/>}
+              {nextStep ? <CustomerInfo info={customerInfo} setInfo={handleCheckOutInfo}/> : <OrderSummary handleClick={()=>setNextStep(true)} items={products}/>}
             </div>
           </div>
         </div>
@@ -187,10 +238,15 @@ function CustomerInfo({
   setInfo,
 }){
   const [customerInfo, setCustomerInfo] = useState(info)
+  const [paymentMethod, setPaymentMethod] = useState(paymentMethodInit[0])
   function handleCheckOut(e){
     e.preventDefault()
-    setInfo(customerInfo)
+    setInfo(customerInfo, paymentMethod)
   }
+  function handlePaymentMethod(e){
+    setPaymentMethod(e.target.value)
+  }
+  const styleMethodChoice = "py-2 px-4 border border-gray-300 bg-white overflow-hidden"
   return(
     <>
       <h1 className="font-semibold text-2xl border-b pb-8">Private Information</h1>
@@ -235,7 +291,23 @@ function CustomerInfo({
         type="text"
         value={customerInfo.phone_number}
       />
-      <button onClick={(e)=>handleCheckOut(e)} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full mt-10">Checkout</button>
+      <br/>
+      <div>
+        <p>Payment Method</p>
+        <div className="flex justify-between ">
+          <div className="relative overflow-hidden">
+            <input type="button" value={paymentMethodInit[0]} className={paymentMethod===paymentMethodInit[0] ? styleMethodChoice+ ' border-orange-500' : styleMethodChoice} 
+            onClick={handlePaymentMethod} />
+          {paymentMethod===paymentMethodInit[0] && <span className="absolute right-0 bottom-0 text-red-600 "><Icon name="check"/></span>}
+          </div>
+          <div className="relative overflow-hidden">
+            <input type="button" value={paymentMethodInit[1]} className={paymentMethod===paymentMethodInit[1] ? styleMethodChoice+ ' border-orange-500' : styleMethodChoice} 
+              onClick={handlePaymentMethod} />
+            {paymentMethod===paymentMethodInit[1] && <span className="absolute right-0 bottom-0 text-red-600 "><Icon name="check"/></span>}
+          </div>
+        </div>
+      </div>
+      <button onClick={(e)=>handleCheckOut(e)} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full mt-10">Place Order</button>
     </>
   )
 }
