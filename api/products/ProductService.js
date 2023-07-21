@@ -12,6 +12,9 @@ const getPromotionalProducts=()=>{
 const getNewReleaseProducts=()=>{
     return axios.get(CLIENT_URL +"/list-new-products")
 }
+const getTopSellingProducts=()=>{
+    return axios.get(CLIENT_URL +"/list-top-products")
+}
 const getProduct=(productId)=>{
     const response = axios.post(CLIENT_URL + "/get-product",{
         product_id : productId,
@@ -30,6 +33,7 @@ const ProductService={
     getProduct,
     getPromotionalProducts,
     getNewReleaseProducts,
+    getTopSellingProducts,
     getProductsByName
 }
 

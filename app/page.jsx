@@ -30,6 +30,8 @@ export default function Home({
       <ListProduct typeListProducts={dataProducts}/>
       <SectionHeading title="NEW RELEASE" />
       <ListProduct typeListProducts="new-release"/>
+      <SectionHeading title="TOP SELLING" />
+      <ListProduct typeListProducts="top-selling"/>
       <SectionHeading title="BRANDS" />
       <Slideshow/>
     </>

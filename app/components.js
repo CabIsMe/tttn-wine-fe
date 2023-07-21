@@ -11,6 +11,8 @@ import ProductService from "@/api/products/ProductService";
 import AuthService from '@/api/authentication/AuthService';
 import CustomerOrderService from '@/api/orders/CustomerOrdersService';
 import useNotification from '@/utils/hooks/useNotification';
+import Image from 'next/image'
+import newBanner from '../public/new1.png'
 export function NavBar({
 }){
   const [isChecked, setIsChecked] = useState({
@@ -53,6 +55,7 @@ export function NavBar({
       </>
   )
 }
+
 
 export function ListProduct({
   typeListProducts
@@ -121,6 +124,14 @@ export function ListProduct({
         }
       })
     }
+    else if(typeListProducts == 'top-selling'){
+      ProductService.getTopSellingProducts().then(res=>{
+        if(res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail)
+        }
+      })
+    }
     else{
       
       ProductService.getProductsByName(typeListProducts).then(res=>{
@@ -147,7 +158,6 @@ export function ListProduct({
               />
               )
           }
-          
         </div>
       </div>
     </>
@@ -320,14 +330,28 @@ export function ProductCard({
     handleClickProduct,
     handleClickCart
   }){
+    const [isHovering, setIsHovering] = useState(false);
 
+    const handleMouseEnter = () => {
+      setIsHovering(true);
+    };
+  
+    const handleMouseLeave = () => {
+      setIsHovering(false);
+    };
     return(
-      <div onClick={handleClickProduct} className="relative w-[90%] bg-white shadow-md rounded-xl duration-500 group 
-      hover:scale-105 hover:shadow-xl overflow-hidden">
-              <img src={productInfo.product_img}
-                      alt="Product" className="w-full h-60 object-cover rounded-t-xl" />
+      <div onClick={handleClickProduct} className="relative w-[85%] bg-white duration-500 group hover:drop-shadow-lg overflow-hidden py-10">
+              
+              <div onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave} className='scale-75 relative'>
+                <img src={isHovering ? productInfo.brand_info.brand_img : productInfo.product_img}
+                      alt="Product" className={`transition-transform duration-1000 ease-in-out transform w-full h-60 ${
+                        isHovering ? 'scale-105 object-fit' : 'scale-100 object-cover'
+                      }`}/>
+                {productInfo.is_new == 1 && <div className='absolute w-[50px] bottom-0 right-0 '><Image src={newBanner} alt='banner'/></div> } 
+              </div>
               <div className="px-4 py-3 w-full">
-                  <span className="text-gray-400 mr-3 uppercase text-xs">{productInfo.brand_info.brand_name}</span>
+                  <span className="text-gray-400 mr-3 uppercase text-xs">{productInfo.category_info.category_name}</span>
                   <p className="text-lg font-bold text-black truncate block capitalize">{productInfo.product_name}</p>
                   <div className="flex items-center">
                       {productInfo.promotion_detail_info == null ? 
@@ -350,6 +374,7 @@ export function ProductCard({
                     <Icon name="cart-plus" size="xl" />
                 </span>
               </div>
+              <div className='absolute text-xs left-5 break-words w-20'>{"frequency" in productInfo && productInfo.frequency +" units sold in 30 days"}</div>
       </div>
     )
   }

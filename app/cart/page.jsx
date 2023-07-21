@@ -205,12 +205,16 @@ function OrderSummary({
   return(
     <>
       <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
-      {items.map(product=>(
-        <div key={product.product_id} className="flex justify-between mt-10 mb-5">
-          <span className="font-semibold text-sm uppercase max-w-[150px] text-black">{product.product_info.product_name}</span>
-          <span className="font-semibold text-sm">{'$'+product.cost*product.amount}</span>
-        </div>
-      ))}
+      <div className="max-h-80 overflow-y-auto">
+        {items.map(product=>(
+          <div key={product.product_id} className="flex justify-between mt-10 mb-5">
+            <span className="font-semibold text-sm uppercase max-w-[150px] text-black">
+              {product.product_info.product_name}
+            </span>
+            <span className="font-semibold text-sm">{'$'+product.cost*product.amount}</span>
+          </div>
+        ))} 
+      </div>
       {/* <div>
         <label className="font-medium inline-block mb-3 text-sm uppercase">Shipping</label>
         <select className="block p-2 text-gray-600 w-full text-sm">

@@ -7,7 +7,7 @@ const CLIENT_URL ="http://localhost:8080/client"
 const AddToCard=async(productId, amount)=>{
     const response = await axios.post(CLIENT_URL + "/add-cart",{
         product_id: productId,
-        amount: amount
+        amount: parseInt(amount)
     },
     {
         headers: authHeader()
