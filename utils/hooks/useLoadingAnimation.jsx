@@ -36,8 +36,14 @@ export function LoadingProvider({
 
 function Spinner() {
     return (
-        <div className="animate-spin fixed bottom-10 right-10 text-gray-700">
-            <Icon name="fan" size="2xl" />
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 scale-125 flex flex-col items-center
+            px-10 py-5 bg-gray-400 text-black">
+            <div className="animate-spin ">
+                <Icon name="fan" size="2xl" />
+            </div>
+            <div>
+                Loading...
+            </div>
         </div>
     )
 }

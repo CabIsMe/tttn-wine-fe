@@ -42,11 +42,32 @@ const CreateCustomerOrder = async(customerInfo, customerOrderDetailInfo) =>{
     return response
 }
 
+const CreatePaymentPaypal=async(price, orderId)=>{
+    const response = await axios.post("http://localhost:9090/pay", {
+        "price": parseFloat(price),
+        "currency": "USD",
+        "method": "paypal",
+        "intent": "sale",
+        "description": orderId,
+        "token": authHeader().token,
+    },
+    )
+    return response
+}
+
+const GetResultPayment=()=>{
+    return axios.get(CLIENT_URL+ "/payment/success",{
+        headers: authHeader()
+    })
+}
+
 const CustomerOrderService={
     AddToCard,
     RemoveItemsCard,
     AllProductsInCart,
-    CreateCustomerOrder
+    CreateCustomerOrder,
+    CreatePaymentPaypal,
+    GetResultPayment
 }
 
 export default CustomerOrderService

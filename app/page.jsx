@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import Icon from '../components/Icon'
 import useAuth from "@/utils/hooks/useAuth"
-
+import PromotionalPopup from '@/layouts/PromotionalPopup'
 import Carousel from "react-multi-carousel";
 import { NavBar, SectionHeading, FilterProduct, ListProduct } from "./components";
 import Header from "@/layouts/Header";
@@ -25,6 +25,7 @@ export default function Home({
   
   return (
     <>
+      <PromotionalPopup/>
       <Header/>
       <FilterProduct SearchProduct={FilterProducts}/>
       <ListProduct typeListProducts={dataProducts}/>

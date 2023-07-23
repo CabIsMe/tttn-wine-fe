@@ -11,20 +11,30 @@ export default function PromotionalPopup(){
     useEffect(() => {
         setShowPopup(true);
     }, []);
-
+    const contentStyle = {
+        // background: '#000', 
+        // padding :'0'
+        width : 'fit-content'
+    };
+    const arrowStyle = { color: '#000' }; // style for an svg element
     return (
-        <Popup open={showPopup} modal onClose={() => setShowPopup(false)}>
-        <div style={{border: "none", width: "fit-content", padding:"0"}} className="popup-content">
-            <div className='relative flex flex-col justify-center items-center'>
-                <div><Image src={logo} alt='logo'/></div>
-                <p>Cheer to You!</p>
-                <button className='absolute right-0 top-0' onClick={() => setShowPopup(false)}>Close</button>
-            </div>
+        <>
+            <Popup open={showPopup} 
+                modal
+                contentStyle={contentStyle} 
+                onClose={() => setShowPopup(false)}>
+                <div className="border-none w-fit "> {/* Custom size and margin */}
+                    <div className='relative flex flex-col justify-center items-center px-10 py-5'>
+                        <div className='object-cover w-[100px]'><Image src={logo} alt='logo' /></div>
 
-
-            
-        </div>
-        </Popup>
+                        <p>Cheer to You!</p>
+                        <a className="close absolute right-0 top-0 cursor-pointer scale-125" onClick={() => setShowPopup(false)}>
+                            &times;
+                        </a>
+                    </div>
+                </div>
+            </Popup>
+        </>
     );
 };
 

@@ -9,23 +9,26 @@ import Textarea from "@/components/Textarea";
 import RadioGroup from "@/components/Radio";
 import CustomerService from "@/api/customer/CustomerService";
 import Icon from "@/components/Icon";
-
+import ProductService from "@/api/products/ProductService";
+import useLoadingAnimation from "@/utils/hooks/useLoadingAnimation";
 const paymentMethodInit=["Cash on delivery", "Paypal"]
 
 export default function Page() {
     const router = useRouter()
     const notify= useNotification()
+    const [showLoading, hideLoading] = useLoadingAnimation();
     const [products, setProducts] = useState([])
     const [customerInfo, setCustomerInfo] = useState(null)
     const [nextStep, setNextStep] = useState(false)
+    const [totalCost, setTotalCost] =useState(null)
     function insertObject(arr, obj) {
 
       // append object
        arr = [...arr, object];
        
        return arr
-   }
-    useEffect(()=>{
+    }
+    function getAllProductsInCart(){
       CustomerOrderService.AllProductsInCart().then(res=>{
         if (res.data.status==1){
           console.log(res.data.detail)
@@ -45,6 +48,9 @@ export default function Page() {
           }
         }
       })
+    }
+    useEffect(()=>{
+      getAllProductsInCart()
       CustomerService.GetCustomerInfo().then(res=>{
         if (res.data.status==1){
           // console.log(res.data.detail)
@@ -54,43 +60,31 @@ export default function Page() {
           console.log(res.data)
         }
       })
-      console.log("customerInfo",customerInfo)
     },[])
     
-    
-    function handleCheckOutInfo(data, method){
-      // payment : Thanh toán trực tiếp
-      if(method == paymentMethodInit[0]){
-        const customerInfo = {
-          "full_name": data.full_name,
-          "address": data.address,
-          "phone_number": data.phone_number,
-          "payment_status": 1,
-        }
-        const listProductsCheckOut = products.slice(0, products.length).map(item => ({ 
-            "product_id":item.product_id,
-            "cost": item.cost,
-            "amount":item.amount
-        }));
-        
-        CustomerOrderService.CreateCustomerOrder(customerInfo, listProductsCheckOut).then(res=>{
-          if (res.data.status == 1){
-            const notification = {
-              text: "Order Success",
-              type: "success"
-            };
-            notify(notification);
-          }
-          else{
-            console.log(res.data)
-          }
-        })
+    function CreateCustomerOrder(data){
+      const customerInfo = {
+        "full_name": data.full_name,
+        "address": data.address,
+        "phone_number": data.phone_number,
+        "payment_status": 1,
       }
-      CustomerService.UpdateCustomer(data).then(res=>{
-        if (res.data.status==1){
-          console.log(res.data.detail)
+      const listProductsCheckOut = products.slice(0, products.length).map(item => ({ 
+          "product_id":item.product_id,
+          "cost": item.cost,
+          "amount":item.amount
+      }));
+      
+      CustomerOrderService.CreateCustomerOrder(customerInfo, listProductsCheckOut).then(res=>{
+        if (res.data.status == 1){
+          const notification = {
+            text: "Order Success",
+            type: "success"
+          };
+          notify(notification);
         }
         else{
+          console.log(res.data)
           const notification = {
             text: res.data.msg,
           };
@@ -98,7 +92,120 @@ export default function Page() {
         }
       })
     }
+    // 
+    function CreateCustomerOrderAndPayment(data){
+      const customerInfo = {
+        "full_name": data.full_name,
+        "address": data.address,
+        "phone_number": data.phone_number,
+        "payment_status": 1,
+      }
+      const listProductsCheckOut = products.slice(0, products.length).map(item => ({ 
+          "product_id":item.product_id,
+          "cost": item.cost,
+          "amount":item.amount
+      }));
+      
+      CustomerOrderService.CreateCustomerOrder(customerInfo, listProductsCheckOut).then(res=>{
+        if (res.data.status == 1){
+          const notification = {
+            text: "Order Success",
+            type: "success"
+          };
+          notify(notification);
+          console.log(res.data)
+          const response = CustomerOrderService.CreatePaymentPaypal(totalCost, res.data.detail.customerOrder.customer_order_id).then(res=>{
+            console.log(res.data)
+            window.open(res.data, '_blank')
+            // router.push(res.data)
+            hideLoading()
+          }).catch(error=>{
+            if(error.response){
+              console.log(error.response)
+            }
+          })
+          showLoading()
+          return response
+        }
+        else{
+          console.log(res.data)
+          const notification = {
+            text: res.data.msg,
+          };
+          notify(notification);
+        }
+      })
+    }
+
+    function handleCheckOutInfo(data, method){
+      
+      // payment : Thanh toán trực tiếp
+      if(method == paymentMethodInit[0]){
+        CustomerService.UpdateCustomer(data).then(res=>{
+          if (res.data.status==1){
+            console.log(res.data.detail)
+            CreateCustomerOrder(data)
+          }
+          else{
+            const notification = {
+              text: res.data.msg,
+            };
+            notify(notification);
+          }
+        })
+
+      }
+      else{
+        // CustomerService.UpdateCustomer(data).then(res=>{
+        //   if (res.data.status==1){
+        //     console.log(res.data.detail)
+        //     // CreateCustomerOrder(data)
+        //     // CreateCustomerOrderAndPayment(data)
+            
+        //   }
+        //   else{
+        //     const notification = {
+        //       text: res.data.msg,
+        //     };
+        //     notify(notification);
+        //   }
+        // })
+        // res.data.detail.customerOrder.customer_order_id
+            const response = CustomerOrderService.CreatePaymentPaypal(totalCost, 100)
+              .then(res=>{
+                console.log(res.data)
+                window.open(res.data, '_blank')
+              // router.push(res.data)
+              hideLoading()
+            }).catch(error=>{
+              if(error.response){
+                console.log(error.response)
+              }
+            })
+            showLoading()
+            return response
+        
+      }
+    }
+
+
     
+    function handleRemoveItem(productId){
+      CustomerOrderService.RemoveItemsCard(productId).then(res=>{
+        if(res.data.status==1){
+          getAllProductsInCart()
+          notify({
+            text: "Remove success", type:"success"
+          });
+        }
+        else{
+          console.log(res.data)
+          notify({
+            text: res.data.msg, type:"danger"
+          });
+        }
+      })
+    }
     return (
       <div className="bg-white">
         <div className="container mx-auto mt-10">
@@ -114,9 +221,9 @@ export default function Page() {
                 <h3 className="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Price</h3>
                 <h3 className="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Total</h3>
               </div>
-              <div className="h-[400px] overflow-x-hidden overflow-y-auto">
+              <div className="h-[360px] overflow-x-hidden overflow-y-auto">
                 {products.map(product=>(
-                  <ProductDetail key={product.product_id} productDetail={product}/>
+                  <ProductDetail key={product.product_id} productDetail={product} handleRemoveItem={handleRemoveItem}/>
                 ))}                  
               </div>
               
@@ -132,7 +239,10 @@ export default function Page() {
             </div>
 
             <div id="summary" className="w-1/4 px-8 py-10">
-              {nextStep ? <CustomerInfo info={customerInfo} setInfo={handleCheckOutInfo}/> : <OrderSummary handleClick={()=>setNextStep(true)} items={products}/>}
+              {nextStep ? <CustomerInfo info={customerInfo} setInfo={handleCheckOutInfo}/> : <OrderSummary handleClick={(total)=>{
+                  setNextStep(true)
+                  setTotalCost(total)}
+                  } items={products}/>}
             </div>
           </div>
         </div>
@@ -148,7 +258,6 @@ function ProductDetail({
   const [amount, setAmount] = useState(productDetail.amount)
   
   const hasPromotion = productDetail.cost < productDetail.product_info.cost
-
   return(
     <div className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5 select-none">
       <div className="flex w-2/5">
@@ -158,7 +267,7 @@ function ProductDetail({
         <div className="flex flex-col justify-between ml-4 flex-grow">
           <span className="font-bold text-sm">{productDetail.product_info.product_name}</span>
           <span className="text-red-500 text-xs whitespace-nowrap ">{productDetail.product_info.status}</span>
-          <span onClick={handleRemoveItem} className="font-semibold hover:text-red-500 text-gray-500 text-xs cursor-pointer">Remove</span>
+          <span onClick={()=>handleRemoveItem(productDetail.product_id)} className="font-semibold hover:text-red-500 text-gray-500 text-xs cursor-pointer">Remove</span>
         </div>
       </div>
       <div className="flex justify-center items-center w-1/5">
@@ -200,7 +309,7 @@ function OrderSummary({
   const totalCost = items.reduce((accumulator, item) => accumulator + item.cost*item.amount, 0);
   function handleCheckOut(e){
     e.preventDefault()
-    handleClick()
+    handleClick(totalCost)
   }
   return(
     <>
