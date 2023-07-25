@@ -174,8 +174,8 @@ export default function Page() {
             const response = CustomerOrderService.CreatePaymentPaypal(totalCost, 100)
               .then(res=>{
                 console.log(res.data)
-                window.open(res.data, '_blank')
-              // router.push(res.data)
+                // window.open(res.data, '_blank')
+              router.push(res.data)
               hideLoading()
             }).catch(error=>{
               if(error.response){

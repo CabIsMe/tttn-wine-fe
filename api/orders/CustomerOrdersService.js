@@ -55,10 +55,20 @@ const CreatePaymentPaypal=async(price, orderId)=>{
     return response
 }
 
-const GetResultPayment=()=>{
-    return axios.get(CLIENT_URL+ "/payment/success",{
+
+
+const GetResultPayment= async(paymentId, PayerID)=>{
+    const response = await axios.get("http://localhost:9090/pay/success",
+    {
+        params: {
+            paymentId :paymentId,
+            PayerID: PayerID
+        }
+    },
+    {
         headers: authHeader()
     })
+    return response
 }
 
 const CustomerOrderService={
