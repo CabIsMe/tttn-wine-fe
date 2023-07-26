@@ -4,6 +4,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import Image from 'next/image';
 import image from '../public/promtional-popup.jpg'
+import imageSale from '../public/sale.png'
 export default function PromotionalPopup(){
     const [showPopup, setShowPopup] = useState(false);
 
@@ -15,6 +16,27 @@ export default function PromotionalPopup(){
         width : 'fit-content'
     };
     const arrowStyle = { color: '#000' }; // style for an svg element
+    const textStyle = {
+      div: {
+        fontFamily: "'Calligraffitti', cursive",
+        fontWeight: 700,
+        fontSize: '3rem',
+        textShadow: '-15px 5px 20px #ced0d3, 5px 5px 0px #FFB650, 10px 10px 0px #FFD662, 15px 15px 0px #FF80BF, 20px 20px 0px #EF5097, 25px 25px 0px #6868AC, 30px 30px 0px #90B1E0',
+        letterSpacing: '0.02em',
+        textAlign: 'center',
+        color: '#F9f1cc',
+      },
+      article: {
+        background: 'linear-gradient(to right, #4b6cb7, #182848)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        textAlign: 'center',
+      },
+      h1: {
+        fontSize: '22px',
+        lineHeight: '1.1',
+      },
+    };
     return (
         <>
             <Popup open={showPopup} 
@@ -26,8 +48,15 @@ export default function PromotionalPopup(){
                         <div className='relative object-cover w-[600px]'>
                             <Image src={image} alt='image' />
                             {/* <strong className='absolute text- top-[15%] right-[15%]'>50%</strong> */}
-                            <div className='absolute text- top-[15%] right-[15%]'><SvgPercent /></div>
-                            <p>1/1 - 2/2</p>
+                            <div className='absolute top-[14%] right-[20%]'>
+                              <div style={textStyle.div}>50%</div>
+                            </div>
+                            <Image className='absolute w-20 top-32 right-4 rotate-12' src={imageSale} alt='image' />
+                            <article style={textStyle.article} className='absolute top-[40%] right-[18%]'>
+                              <h1 style={textStyle.h1}>
+                                01/01/2023-<p>02/02/2023</p>
+                              </h1>
+                            </article>
                         </div>
                         
                         <a className="close absolute right-1 top-0 cursor-pointer text-xl" onClick={() => setShowPopup(false)}>
