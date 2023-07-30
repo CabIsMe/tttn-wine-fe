@@ -92,6 +92,7 @@ export default function Page() {
         }
       })
     }
+
     // 
     function CreateCustomerOrderAndPayment(data){
       const customerInfo = {
@@ -116,8 +117,7 @@ export default function Page() {
           console.log(res.data)
           const response = CustomerOrderService.CreatePaymentPaypal(totalCost, res.data.detail.customerOrder.customer_order_id).then(res=>{
             console.log(res.data)
-            window.open(res.data, '_blank')
-            // router.push(res.data)
+            router.push(res.data)
             hideLoading()
           }).catch(error=>{
             if(error.response){
@@ -156,34 +156,18 @@ export default function Page() {
 
       }
       else{
-        // CustomerService.UpdateCustomer(data).then(res=>{
-        //   if (res.data.status==1){
-        //     console.log(res.data.detail)
-        //     // CreateCustomerOrder(data)
-        //     // CreateCustomerOrderAndPayment(data)
-            
-        //   }
-        //   else{
-        //     const notification = {
-        //       text: res.data.msg,
-        //     };
-        //     notify(notification);
-        //   }
-        // })
-        // res.data.detail.customerOrder.customer_order_id
-            const response = CustomerOrderService.CreatePaymentPaypal(totalCost, 100)
-              .then(res=>{
-                console.log(res.data)
-                // window.open(res.data, '_blank')
-              router.push(res.data)
-              hideLoading()
-            }).catch(error=>{
-              if(error.response){
-                console.log(error.response)
-              }
-            })
-            showLoading()
-            return response
+        CustomerService.UpdateCustomer(data).then(res=>{
+          if (res.data.status==1){
+            console.log(res.data.detail)
+            CreateCustomerOrderAndPayment(data)
+          }
+          else{
+            const notification = {
+              text: res.data.msg,
+            };
+            notify(notification);
+          }
+        })
         
       }
     }

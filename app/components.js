@@ -147,7 +147,7 @@ export function ListProduct({
   return(
     <>
       
-      <div className="w-full flex justify-center py-24">
+      <div className="w-full flex justify-center py-16">
         <div className="w-[88%] grid grid-cols-5 gap-4">
           {
             products.map(product=>

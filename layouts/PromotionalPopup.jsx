@@ -5,12 +5,21 @@ import 'reactjs-popup/dist/index.css';
 import Image from 'next/image';
 import image from '../public/promtional-popup.jpg'
 import imageSale from '../public/sale.png'
+import UtilsService from '@/api/UtilsService';
 export default function PromotionalPopup(){
     const [showPopup, setShowPopup] = useState(false);
-
+    const [promotionInfo, setPromotionInfo] = useState(undefined)
   // Add your logic to automatically show the popup
     useEffect(() => {
-        setShowPopup(true);
+      UtilsService.GetCurrentPromotion().then(res=>{
+        if(res.data.status==1 && res.data.detail!= null){
+          setPromotionInfo(res.data.detail)
+          setShowPopup(true)
+        }else{
+          console.log(res.data)
+        }
+      })
+      
     }, []);
     const contentStyle = {
         width : 'fit-content'
@@ -21,6 +30,15 @@ export default function PromotionalPopup(){
         fontFamily: "'Calligraffitti', cursive",
         fontWeight: 700,
         fontSize: '3rem',
+        textShadow: '-15px 5px 20px #ced0d3, 5px 5px 0px #FFB650, 10px 10px 0px #FFD662, 15px 15px 0px #FF80BF, 20px 20px 0px #EF5097, 25px 25px 0px #6868AC, 30px 30px 0px #90B1E0',
+        letterSpacing: '0.02em',
+        textAlign: 'center',
+        color: '#F9f1cc',
+      },
+      div2: {
+        fontFamily: "'Calligraffitti', cursive",
+        fontWeight: 500,
+        fontSize: '1.5rem',
         textShadow: '-15px 5px 20px #ced0d3, 5px 5px 0px #FFB650, 10px 10px 0px #FFD662, 15px 15px 0px #FF80BF, 20px 20px 0px #EF5097, 25px 25px 0px #6868AC, 30px 30px 0px #90B1E0',
         letterSpacing: '0.02em',
         textAlign: 'center',
@@ -39,7 +57,7 @@ export default function PromotionalPopup(){
     };
     return (
         <>
-            <Popup open={showPopup} 
+             {promotionInfo && <Popup open={showPopup} 
                 modal
                 contentStyle={contentStyle} 
                 onClose={() => setShowPopup(false)}>
@@ -48,13 +66,14 @@ export default function PromotionalPopup(){
                         <div className='relative object-cover w-[600px]'>
                             <Image src={image} alt='image' />
                             {/* <strong className='absolute text- top-[15%] right-[15%]'>50%</strong> */}
+                            <div style={textStyle.div2} className='absolute top-[10%] right-[32%] '>up to</div>
                             <div className='absolute top-[14%] right-[20%]'>
-                              <div style={textStyle.div}>50%</div>
+                              <div style={textStyle.div}>{promotionInfo.discount_percentage*100+'%'}</div>
                             </div>
                             <Image className='absolute w-20 top-32 right-4 rotate-12' src={imageSale} alt='image' />
                             <article style={textStyle.article} className='absolute top-[40%] right-[18%]'>
                               <h1 style={textStyle.h1}>
-                                01/01/2023-<p>02/02/2023</p>
+                                {promotionInfo.date_start.substring(0, 10)+'-'}<p>{promotionInfo.date_end.substring(0, 10)}</p>
                               </h1>
                             </article>
                         </div>
@@ -64,7 +83,7 @@ export default function PromotionalPopup(){
                         </a>
                     </div>
                 </div>
-            </Popup>
+            </Popup>}
         </>
     );
 };
