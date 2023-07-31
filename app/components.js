@@ -99,7 +99,6 @@ export function ListProduct({
 
   const [products, setProducts] = useState([])
   useEffect(()=>{
-    console.log("typeListProducts", typeListProducts)
     if(typeListProducts == 'all'){
       ProductService.getAllProducts().then(res=>{
         if(res.data.status==1){
@@ -360,7 +359,9 @@ export function ProductCard({
                     
                       </> :
                       <>
-                        <p className="text-lg font-semibold text-black cursor-auto my-3">{productInfo.discounted_cost}$</p>
+                        <p className="text-lg font-semibold text-black cursor-auto my-3">{productInfo.discounted_cost === undefined 
+                          ? (productInfo.cost*(1-productInfo.promotion_detail_info.discount_percentage)) //productInfo.cost 
+                          : productInfo.discounted_cost}$</p>
                         <del>
                             <p className="text-sm text-gray-600 cursor-auto ml-2">{productInfo.cost}$</p>
                         </del>
