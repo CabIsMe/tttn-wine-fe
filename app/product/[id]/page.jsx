@@ -8,6 +8,8 @@ import useAuth from "@/utils/hooks/useAuth";
 import Header from "@/layouts/Header";
 import CustomerOrderService from "@/api/orders/CustomerOrdersService";
 import useNotification from "@/utils/hooks/useNotification";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 const relevantProducts =[
     {id: 1, product_name:"Wine1", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/092121-1.1c7d8cfea75f219576db460999053e55.jpg"},
     {id: 2, product_name:"Wine2", cost:25, brand:"Altos Las Hormigas", product_img:"https://vinoteka.vn/assets/components/phpthumbof/cache/010704-1.40470121fa34a4bd0978a6ca95883141.jpg"},
@@ -172,18 +174,44 @@ export default function Page(
 function RelevantProducts({
     products
 }){
-    return(
-        <section className="w-full flex-col justify-between">
-                    <div className="w-[88%]  mx-auto flex justify-between gap-5 ">
-                    {/* {
-                        products.map(product=>
-                            <ProductCard key={product.id} productInfo={product} handleClickProduct={() => console.log(product.id)} 
-                            handleClickCart={(e)=> console.log(product.id, e)}
-                            />
-                        )
-                    } */}
-                    
-                    </div>
-                </section>
-    )
+    const images = [
+        'https://wineshop.vn/public/uploaded/product_brand/francis-ford.png',
+        'https://wineshop.vn/public/uploaded/product_brand/home-korta.jpg',
+        'https://wineshop.vn/public/uploaded/product_brand/product_brand_13.jpg',
+        'https://wineshop.vn/public/uploaded/product_brand/san-mazano.jpg',
+        'https://wineshop.vn/public/uploaded/product_brand/product_brand_7.png',
+        'https://wineshop.vn/public/uploaded/product_brand/product_brand_9.png',
+        'https://wineshop.vn/public/uploaded/product_brand/product_brand_16.png',
+        'https://wineshop.vn/public/uploaded/product_brand/product_brand_15.png'
+        // Add more image URLs as needed
+    ];
+    
+    const responsive = {
+    desktop: {
+        breakpoint: { max: 3000, min: 1024 },
+        items: 5,
+    },
+    tablet: {
+        breakpoint: { max: 1024, min: 464 },
+        items: 2,
+    },
+    mobile: {
+        breakpoint: { max: 464, min: 0 },
+        items: 1,
+    },
+    };
+      
+    return (
+    <div className="w-screen flex justify-center">
+        <div className="w-10/12 bg-white">
+        <Carousel responsive={responsive}>
+            {images.map((imageUrl, index) => (
+            <div className="h-[350px] flex justify-around items-center px-6" key={index}>
+                <img src={imageUrl} alt={`Slide ${index}`} />
+            </div>
+            ))}
+        </Carousel>
+        </div>
+    </div>
+    );
 }

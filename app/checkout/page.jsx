@@ -17,7 +17,7 @@ export default function Page() {
         const PayerID= searchParams.get('PayerID')
         CustomerOrderService.GetResultPayment(paymentId, PayerID).then(res=>{
             console.log(res.data)
-            if(res.data){
+            if(res.data){ // success
                 CustomerOrderService.UpdatePaymentStatus(res.data).then(res2=>{
                   if(res2.data.status==1){
                     setPaymentStatus(true)

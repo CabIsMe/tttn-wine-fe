@@ -108,7 +108,7 @@ export default function Page() {
       }));
       
       CustomerOrderService.CreateCustomerOrder(customerInfo, listProductsCheckOut).then(res=>{
-        if (res.data.status == 1){
+        if (res.data.status == 1){  // success
           const notification = {
             text: "Order Success",
             type: "success"

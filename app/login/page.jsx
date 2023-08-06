@@ -60,6 +60,8 @@ export default function Page() {
                     console.log(res.data)
                     console.log('user', response)
                     setProfile(res.data);
+                    // api get token
+                    
                     router.push("/")
                 })
                 .catch((err) => console.log(err));

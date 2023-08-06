@@ -6,9 +6,9 @@ import Icon from '../components/Icon'
 import useAuth from "@/utils/hooks/useAuth"
 import PromotionalPopup from '@/layouts/PromotionalPopup'
 import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import { NavBar, SectionHeading, FilterProduct, ListProduct } from "./components";
 import Header from "@/layouts/Header";
-import "react-multi-carousel/lib/styles.css";
 export default function Home({
 }) {
   const [dataProducts, setDataProducts] = useState("all")
@@ -86,7 +86,7 @@ function Slideshow() {
       items: 1,
     },
   };
-
+  
   return (
     <div className="w-screen flex justify-center">
       <div className="w-10/12 bg-white">
