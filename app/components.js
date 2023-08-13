@@ -353,6 +353,7 @@ export function ProductCard({
     handleClickProduct,
     handleClickCart
   }){
+    console.log(productInfo)
     const [isHovering, setIsHovering] = useState(false);
 
     const handleMouseEnter = () => {

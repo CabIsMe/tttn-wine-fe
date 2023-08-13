@@ -13,7 +13,7 @@ export default function Page() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [ profile, setProfile ] = useState([]);
-    const [errorInput, setErrorInput] = useState("123")
+    const [errorInput, setErrorInput] = useState("")
     const router = useRouter()
     // useEffect(
     //     () => {
