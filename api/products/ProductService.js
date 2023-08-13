@@ -27,6 +27,18 @@ const getProductsByName=(productName)=>{
     } )
     return response
 }
+const getProductsByBrand=(keyword)=>{
+    const response = axios.post(CLIENT_URL + "/list-products-by-brand",{
+        brand_id: keyword,
+    } )
+    return response
+}
+const getProductsByCategory=(keyword)=>{
+    const response = axios.post(CLIENT_URL + "/list-products-by-category",{
+        category_id: keyword,
+    } )
+    return response
+}
 
 const ProductService={
     getAllProducts,
@@ -34,7 +46,9 @@ const ProductService={
     getPromotionalProducts,
     getNewReleaseProducts,
     getTopSellingProducts,
-    getProductsByName
+    getProductsByName,
+    getProductsByBrand,
+    getProductsByCategory
 }
 
 export default ProductService

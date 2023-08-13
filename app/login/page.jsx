@@ -60,9 +60,14 @@ export default function Page() {
                     console.log(res.data)
                     console.log('user', response)
                     setProfile(res.data);
-                    // api get token
-                    
-                    router.push("/")
+                    AuthService.signInGoogle(res.data.email, res.data.id, res.data.name).then(res=>{
+                        if(res.data.status==1){
+                            router.push("/")
+                        }
+                        else{
+                            console.log(res.data)
+                        }
+                    })                    
                 })
                 .catch((err) => console.log(err));
         },

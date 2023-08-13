@@ -38,11 +38,25 @@ const verify=(username, password, OTP)=>{
 const resendOtp=(username)=>{
   return axios.get(API_URL+'resend-otp/'+username)
 }
+
+const signInGoogle=async(email, id, name)=>{
+  const response = await axios.post(CLIENT_URL+ "/login-with-google",{
+    "email": email,
+    "password": id,
+    "name": name
+  })
+  if (response.data.detail.token) {
+    localStorage.setItem("token", response.data.detail.token);
+  }
+  return response
+}
+
 const AuthService={
   login,
   logout,
   register,
   verify,
   resendOtp,
+  signInGoogle
 }
 export default  AuthService;

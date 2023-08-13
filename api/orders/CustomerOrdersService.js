@@ -77,6 +77,13 @@ const UpdatePaymentStatus=async(orderId)=>{
     })
     return response
 }
+const GetMyCustomerOrdered=async()=>{
+    const response = await axios.post(CLIENT_URL +"/list-ordered",{
+    },{
+        headers: authHeader()
+    })
+    return response
+}
 
 const CustomerOrderService={
     AddToCard,
@@ -85,7 +92,8 @@ const CustomerOrderService={
     CreateCustomerOrder,
     CreatePaymentPaypal,
     GetResultPayment,
-    UpdatePaymentStatus
+    UpdatePaymentStatus,
+    GetMyCustomerOrdered
 }
 
 export default CustomerOrderService

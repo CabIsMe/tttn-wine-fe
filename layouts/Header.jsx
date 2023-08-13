@@ -5,21 +5,24 @@ import { MenuComponent, NavBar } from '@/app/components'
 export default function Header({
     children,
 }){
-    const listCategories= [
-        {id: "1", name:"White Wines"},
-        {id: "2", name:"Rosé Wines"},
-        {id: "3", name:"Sparkling Wines"},
-        {id: "4", name:"Dessert Wines"},
-        {id: "5", name:"Fortified Wines"},
-      ]
-    const listBrands= [
-        {id:"1", name:"Château Lafite Rothschild"},
-        {id:"2", name:"Penfolds"},
-        {id:"3", name:"Marchesi Antinori"},
-        {id:"4", name:"Louis Roederer"},
-        {id:"5", name:"Harlan Estate"},
-        {id:"6", name:"Screaming Eagle "},
-      ]
+    const listBrands=[
+      {id: "BR044023", name:"Carlo Rossi"},
+      {id: "BR210079", name:"Yellow Tail"},
+      {id: "BR530964", name:"Woodbridge Mondavi"},
+      {id: "BR556729", name:"Peter Vella"},
+      {id: "BR689371", name:"Barefoot Cellars"},
+      {id: "BR729998", name:"Franzia"},
+      {id: "BR908082", name:"Twin Valley"},
+      {id: "BR964479", name:"Sutter Home"},
+    ]
+    const listCategories=[
+      {id: "TW264812", name:"Sparkling Wines"},
+      {id: "TW366960", name:"Dessert Wines"},
+      {id: "TW667968", name:"Red Wines"},
+      {id: "TW791274", name:"Red Wines"},
+      {id: "TW868383", name:"White Wines"},
+      {id: "TW955788", name:"Rosé Wines"},
+    ]
     return(
         <header className="sticky top-0 z-50">
           <div className="flex flex-wrap place-items-top ">
