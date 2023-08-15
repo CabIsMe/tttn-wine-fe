@@ -59,7 +59,8 @@ export function NavBar({
 
 
 export function ListProduct({
-  typeListProducts
+  typeListProducts,
+
 }){
   const router = useRouter();
   const notify = useNotification();
@@ -133,8 +134,27 @@ export function ListProduct({
         }
       })
     }
+    else if(typeListProducts.startsWith('brand-')){
+      let str=typeListProducts.split('-')[1]
+      ProductService.getProductsByBrand(str).then(res=>{
+          console.log(res.data)
+        if(res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail.listData)
+        }
+      })
+    }
+    else if(typeListProducts.startsWith('category-')){
+      let str=typeListProducts.split('-')[1]
+      ProductService.getProductsByCategory(str).then(res=>{
+          console.log(res.data)
+        if(res.data.status==1){
+          console.log(res.data.detail)
+          setProducts(res.data.detail.listData)
+        }
+      })
+    }
     else{
-      
       ProductService.getProductsByName(typeListProducts).then(res=>{
         console.log(res.data)
         if(res.data.status==1){
@@ -256,7 +276,7 @@ export function PersonalMenu({
                   router.push("info")
                 }} nameDisplay="My Account"/>
                 <PersonalMenuComponent handleClick={()=>{
-                  router.push("info")
+                  router.push("purchase")
                 }} nameDisplay="My Purchase"/>
                 <PersonalMenuComponent handleClick={()=>{
                   AuthService.logout()
@@ -293,6 +313,10 @@ export function MenuComponent({
         setIsDropdownOpen(false);
       };
     const router=  useRouter()
+    function handleRedirect(id){
+      const pathUrl = nameDisplay.toLowerCase()
+      router.push(`/${pathUrl}/${id}`)
+    }
     return(
         <div className="relative">
             <li className="hover:cursor-pointer" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -302,7 +326,7 @@ export function MenuComponent({
             <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
                 className="absolute min-w-max w-28 py-2 bg-white border rounded shadow-lg">
                     {dropdown.map(data=>(
-                        <span key={data.id} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">
+                        <span key={data.id} onClick={()=>handleRedirect(data.id)} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">
                             {data.name}
                         </span>
                     ))}
