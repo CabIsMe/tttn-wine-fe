@@ -1,0 +1,28 @@
+@keyframes changeBackground {
+    0% {
+      background-image: url('../bg.png');
+    }
+    20% {
+      background-image: url('../bg2.png');
+    }
+    40% {
+      background-image: url('../bg3.png');
+    }
+    60% {
+      background-image: url('../bg4.png');
+    }
+    80% {
+      background-image: url('../bg5.png');
+    }
+    100% {
+      background-image: url('../bg.png');
+    }
+  }
+  
+  .bg {
+    animation: changeBackground 30s infinite step-end;
+    /* background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100vh; */
+  }

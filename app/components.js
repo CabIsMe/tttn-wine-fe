@@ -13,6 +13,7 @@ import CustomerOrderService from '@/api/orders/CustomerOrdersService';
 import useNotification from '@/utils/hooks/useNotification';
 import Image from 'next/image'
 import newBanner from '../public/new1.png'
+import '../public/css/style.css'
 export function NavBar({
 }){
   const [isChecked, setIsChecked] = useState({
@@ -87,7 +88,8 @@ export function ListProduct({
         router.push("/login")
       }
       else{
-        console.log(res.data)
+        console.log(123)
+        console.log(res.data.detail)
         const notification = {
           text: res.data.detail,
         };
@@ -173,19 +175,35 @@ export function FilterProduct({
     FilterProduct(type)
 
   } 
-  // function handleSearch(e){
-  //   SearchProduct(searchInput)
-  // }
+  const [bgIndex, setBgIndex] = useState(0);
+  const listBgs = [
+    'bg.png',
+    'bg2.png',
+    'bg3.png',
+    'bg4.png',
+    'bg5.png',
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBgIndex((prevIndex) => (prevIndex + 1) % listBgs.length);
+    }, 5000); // Thay đổi ảnh mỗi 5 giây
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const options=[
     {name: "Cost", value:"cost-up", icon:"arrow-up-short-wide"},
     {name: "Rate", value:"rate-up", icon:"arrow-up-short-wide"},
     {name: "Release", value:"release-up", icon:"arrow-up-short-wide"}
   ]
+  
   return(
-    // bg-gray-100 
-    <div className="w-screen min-h-[100vh] bg-[url('../public/bg2.png')] bg-cover
-      flex justify-center items-end mb-12">
+    // bg-gray-100 ${listBgs[bgIndex]} '../public/bg.png'
+    <div className="w-screen min-h-[100vh] bg-cover 
+    flex justify-center items-end mb-12 bg">
       <div className="space-y-10 py-8">
         <div className="flex items-center p-6 space-x-6 bg-white opacity-90 text-[16px]
         text-gray-600 rounded-xl shadow-lg hover:shadow-xl transform scale-95 hover:scale-100 transition duration-700">
@@ -329,7 +347,6 @@ export function ProductCard({
     handleClickProduct,
     handleClickCart
   }){
-    console.log(productInfo)
     const [isHovering, setIsHovering] = useState(false);
 
     const handleMouseEnter = () => {

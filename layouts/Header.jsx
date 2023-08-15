@@ -1,7 +1,8 @@
 'use client'
 import {assets} from '../utils/constants/logo'
 import { MenuComponent, NavBar } from '@/app/components'
-
+import Image from 'next/image'
+import logo from "../public/logo.png"
 export default function Header({
     children,
 }){
@@ -26,10 +27,9 @@ export default function Header({
             <section className="relative mx-auto">
                 {/* <!-- navbar --> */}
               <nav className="flex justify-between bg-slate-200 text-black w-screen">
-                <div className="mx-14 xl:px-12 py-4 flex w-full items-center">
+                <div className="mx-14 xl:px-12 py-1 flex w-full items-center">
                   <a className="text-3xl font-bold font-heading" href="/">
-                    <img className="h-9" src={assets.logo} alt="logo"/> 
-                    
+                    <Image className='w-20' src={logo} alt='logo'/>
                   </a>
                   {/* <!-- Nav Links --> */}
                   <ul className="hidden md:flex px-4 mx-auto font-semibold font-heading space-x-12">
