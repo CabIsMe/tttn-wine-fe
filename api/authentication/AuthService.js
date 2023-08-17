@@ -19,12 +19,13 @@ const logout=()=> {
   location.reload();
 }
 // Sign up
-const register=async(username, password)=>{
-  const response = await axios.post(API_URL + "signup", {
-    username,
-    password
-  });
-  return response.data;
+const register=async(email, password, fullName)=>{
+  const response = await axios.post(CLIENT_URL + "/sign-up", {
+    "email": email,
+    "password":password,
+    "name": fullName
+});
+  return response;
 }
 
 const verify=(username, password, OTP)=>{

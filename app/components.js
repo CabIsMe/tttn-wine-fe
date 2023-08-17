@@ -48,7 +48,7 @@ export function NavBar({
               </div> : 
               <div className='flex justify-between min-w-[110px]'>
                 <AnonymousPage direction="login" nameDisplay="Login"/>
-                <AnonymousPage direction="signup" nameDisplay="Sign up"/>
+                <AnonymousPage direction="sign_up" nameDisplay="Sign up"/>
               </div>
             }
           </div>

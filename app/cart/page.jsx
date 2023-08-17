@@ -138,6 +138,7 @@ export default function Page() {
     }
 
     function handleCheckOutInfo(data, method){
+      console.log(data)
       
       // payment : Thanh toán trực tiếp
       if(method == paymentMethodInit[0]){
@@ -151,6 +152,7 @@ export default function Page() {
               text: res.data.msg,
             };
             notify(notification);
+            console.log(res.data.detail)
           }
         })
 
@@ -273,15 +275,15 @@ function ProductDetail({
         {
         hasPromotion ? 
           (<>
-            <span className="line-through text-gray-500 mr-1">{'$'+productDetail.product_info.cost}</span>
-            {'$'+productDetail.cost}
+            <span className="line-through text-gray-500 mr-1">{'$'+productDetail.product_info.cost.toFixed(2)}</span>
+            {'$'+productDetail.cost.toFixed(2)}
           </>):
           (<>
-            {'$'+productDetail.cost}
+            {'$'+productDetail.cost.toFixed(2)}
           </>)
         }
       </span>
-      <span className="text-center w-1/5 font-semibold text-sm">{'$'+productDetail.cost*productDetail.amount}</span>
+      <span className="text-center w-1/5 font-semibold text-sm">{'$'+(productDetail.cost*productDetail.amount).toFixed(2)}</span>
     </div>
   )
 }
@@ -304,7 +306,7 @@ function OrderSummary({
             <span className="font-semibold text-sm uppercase max-w-[150px] text-black">
               {product.product_info.product_name}
             </span>
-            <span className="font-semibold text-sm">{'$'+product.cost*product.amount}</span>
+            <span className="font-semibold text-sm">{'$'+(product.cost*product.amount).toFixed(2)}</span>
           </div>
         ))} 
       </div>
@@ -322,7 +324,7 @@ function OrderSummary({
       <div className="border-t mt-8">
         <div className="flex font-semibold justify-between py-6 text-sm uppercase">
           <span>Total cost</span>
-          <span>{'$'+totalCost}</span>
+          <span>{'$'+totalCost.toFixed(2)}</span>
         </div>
         <button onClick={(e)=>handleCheckOut(e)} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
       </div>
@@ -371,6 +373,10 @@ function CustomerInfo({
         placeholder="YYYY-MM-DD"
         type="text"
         value={customerInfo.date_of_birth}
+        handleChange={(e)=>setCustomerInfo({
+          ...customerInfo,
+          date_of_birth: e.target.value
+        })}
       />
       <br/>
       <Textarea
@@ -379,6 +385,10 @@ function CustomerInfo({
         placeholder="...Street, House No"
         type="text"
         value={customerInfo.address}
+        handleChange={(e)=>setCustomerInfo({
+          ...customerInfo,
+          address: e.target.value
+        })}
       />
       <br/>
       <Input
@@ -387,6 +397,10 @@ function CustomerInfo({
         placeholder="YYYY-MM-DD"
         type="text"
         value={customerInfo.phone_number}
+        handleChange={(e)=>setCustomerInfo({
+          ...customerInfo,
+          phone_number: e.target.value
+        })}
       />
       <br/>
       <div>

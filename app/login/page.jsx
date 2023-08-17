@@ -6,8 +6,10 @@ import AuthService from "@/api/authentication/AuthService";
 import { useRouter } from "next/navigation";
 import useAuth from "@/utils/hooks/useAuth"
 import axios from 'axios';
+import logo from '../../public/logo.png'
 
 import {useGoogleLogin  } from '@react-oauth/google';
+import Image from "next/image";
 
 export default function Page() {
     const [email, setEmail] = useState('');
@@ -81,7 +83,7 @@ export default function Page() {
                 <div className="absolute z-10 h-full right-0 -top-10 w-[650px] break-words backdrop-blur-sm flex justify-center items-center mx-auto rounded py-6">
                     <div className="text-lg w-[300px]">
                         <div className="flex w-full justify-center items-center">
-                            <img src={assets.logo} alt="logo" width="300px"/>
+                            <span className="w-[200px]"><Image src={logo} alt="logo"/></span>
                         </div>
                         <center><h2 className="text-2xl font-bold mb-6">Login</h2></center>
                         <form onSubmit={handleLogin}>

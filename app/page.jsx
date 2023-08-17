@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import Icon from '../components/Icon'
 import useAuth from "@/utils/hooks/useAuth"
-import PromotionalPopup from '@/layouts/PromotionalPopup'
+import CheckAgePopup from '@/layouts/CheckAgePopup'
+
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { NavBar, SectionHeading, FilterProduct, ListProduct } from "./components";
 import Header from "@/layouts/Header";
+import PromotionalPopup from "@/layouts/PromotionalPopup";
 export default function Home({
 }) {
   const [dataProducts, setDataProducts] = useState("all")
@@ -21,11 +23,15 @@ export default function Home({
       setDataProducts(name)
     }
   }
-  
+  const [showPopupPromotion, setShowPopupPromotion] = useState(false)
+  function onShowPopupCheckAge(){
+    setShowPopupPromotion(true)
+  }
   
   return (
     <>
-      <PromotionalPopup/>
+      <CheckAgePopup onShowPopup={onShowPopupCheckAge}/>
+      {showPopupPromotion && <PromotionalPopup/>}
       <Header/>
       <FilterProduct SearchProduct={FilterProducts}/>
       <ListProduct typeListProducts={dataProducts}/>

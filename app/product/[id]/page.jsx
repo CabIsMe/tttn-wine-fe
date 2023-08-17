@@ -52,7 +52,20 @@ export default function Page(
                 })
             }
             else{
-                console.log(res.data)
+                if(typeof res.data.detail == "string"){
+                    const notification = {
+                        text: res.data.detail,
+                        type:"error"
+                      };
+                    notify(notification);
+                }else{
+                    const notification = {
+                        text: res.data.msg,
+                        type:"error"
+                    };
+                    notify(notification);
+                }
+                
             }
         })
     }
@@ -144,11 +157,11 @@ export default function Page(
                                 {
                                  productDetail.promotion_detail_info != null ?   
                                  <>
-                                    <span className="title-font font-medium text-2xl text-gray-900">{productDetail.cost *(1-productDetail.promotion_detail_info.discount_percentage)+'$'}</span>
-                                    <span className="line-through text-sm mx-2">{productDetail.cost+'$'}</span>
+                                    <span className="title-font font-medium text-2xl text-gray-900">{(productDetail.cost *(1-productDetail.promotion_detail_info.discount_percentage)).toFixed(2)+'$'}</span>
+                                    <span className="line-through text-sm mx-2">{productDetail.cost.toFixed(2)+'$'}</span>
                                  </>
                                  : 
-                                 <span className="title-font font-medium text-2xl text-gray-900">{productDetail.cost + '$'}</span>
+                                 <span className="title-font font-medium text-2xl text-gray-900">{productDetail.cost.toFixed(2) + '$'}</span>
                                  
                                 }
                             
